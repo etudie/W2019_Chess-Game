@@ -1,5 +1,10 @@
-package W19Project3GIVETOSTUDENTS;
-
+package chess;
+/*	ChessGUI.java
+This class is responsible for
+1. Contains the main method
+2. creates and displays chess game GUI
+3. uses chess piece icons
+ */
 import java.awt.Dimension;
 
 import javax.swing.JFrame;

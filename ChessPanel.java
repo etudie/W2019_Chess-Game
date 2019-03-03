@@ -1,5 +1,12 @@
-package W19Project3GIVETOSTUDENTS;
-
+package chess;
+/*	ChessPanel.java
+This class is responsible for
+1. presenting the GUI
+2. respond to user actions
+3. updates view
+4. allows white to move before black
+5. allows only valid moves
+ */
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;

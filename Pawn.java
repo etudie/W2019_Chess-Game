@@ -1,16 +1,18 @@
 package chess;
 
-public class King extends ChessPiece {
+public class Pawn extends ChessPiece {
 
-	public King(Player player) {
+	public Pawn(Player player) {
 		super(player);
 	}
 
 	public String type() {
-		return "King";
+		return "Pawn";
 	}
-	
+
+	// determines if the move is valid for a pawn piece
 	public boolean isValidMove(Move move, IChessPiece[][] board) {
+
 		boolean valid = true;
         // More code is needed
 		return valid;

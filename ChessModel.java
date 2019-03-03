@@ -1,5 +1,11 @@
-package W19Project3GIVETOSTUDENTS;
+package chess;
 
+/*	ChessModel.java
+This class is responsible for
+1. storing the chessboard
+2. implementing game logic
+3. implement methods from IChessModel interface
+ */
 public class ChessModel implements IChessModel {	 
     private IChessPiece[][] board;
 	private Player player;
@@ -20,6 +26,9 @@ public class ChessModel implements IChessModel {
         board[7][7] = new Rook(Player.WHITE);
 	}
 
+	// Displays Joption panel when game is complete
+	// HAS JUNIT testing
+	// Uses inCheck(); //Fixme : not confident :(
 	public boolean isComplete() {
 		boolean valid = false;
 		return valid;
@@ -40,6 +49,7 @@ public class ChessModel implements IChessModel {
 		board[move.fromRow][move.fromColumn] = null;
 	}
 
+	// Displays a JOPtion Panel when King is inCheck
 	public boolean inCheck(Player p) {
 		boolean valid = false;
 		return valid;

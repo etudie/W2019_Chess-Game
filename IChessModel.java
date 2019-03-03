@@ -1,5 +1,5 @@
-package W19Project3GIVETOSTUDENTS;
-
+package chess;
+// ME : DO NOT TOUCH YOU ARE NOT ALLOWED TO EDIT THIS
 public interface IChessModel {
 
 	/**

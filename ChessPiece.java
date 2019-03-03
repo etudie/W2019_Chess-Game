@@ -1,4 +1,4 @@
-package W19Project3GIVETOSTUDENTS;
+package chess;
 
 public abstract class ChessPiece implements IChessPiece {
 
@@ -17,11 +17,19 @@ public abstract class ChessPiece implements IChessPiece {
 	public boolean isValidMove(Move move, IChessPiece[][] board) {
 		boolean valid = false;
 
-		//  THIS IS A START... More coding needed
 		
 		if (((move.fromRow == move.toRow) && (move.fromColumn == move.toColumn)) == false)
 			return valid;
 
+		return false;
+	}
+	// return true if occupied by any other piece
+	public boolean isOccupied(IChessPiece[][] board){
+		return false ;
+	}
+
+	// return true if boards are different
+	public boolean compareBoard(Move move){
 		return false;
 	}
 }

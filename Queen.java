@@ -1,4 +1,4 @@
-package W19Project3GIVETOSTUDENTS;
+package chess;
 
 public class Queen extends ChessPiece {
 
