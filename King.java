@@ -1,4 +1,6 @@
 package chess;
+
+// Assume all comments were done by XUE unless otherwise stated
 import java.lang.Math;
 public class King extends ChessPiece {
 

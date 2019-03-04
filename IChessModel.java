@@ -1,5 +1,5 @@
 package chess;
-// ME : DO NOT TOUCH YOU ARE NOT ALLOWED TO EDIT THIS
+// XUE : DO NOT TOUCH YOU ARE NOT ALLOWED TO EDIT THIS
 public interface IChessModel {
 
 	/**

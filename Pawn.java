@@ -1,5 +1,5 @@
 package chess;
-
+// Assume all comments were done by XUE unless otherwise stated
 public class Pawn extends ChessPiece {
 
     /* Checks if this is Pawn's first move */
@@ -20,7 +20,7 @@ public class Pawn extends ChessPiece {
 
         System.out.print("...moving PAWN");
 
-        // MOVING FORWARD //
+        //  MOVING FORWARD //
         if (move.toColumn == move.fromColumn) {
             if (player() == Player.WHITE)
                 if (firstMove) {    // move 2 spaces if want to

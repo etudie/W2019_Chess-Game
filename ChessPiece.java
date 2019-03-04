@@ -15,7 +15,7 @@ public abstract class ChessPiece implements IChessPiece {
     }
 
 
-    public boolean isValidMove(Move move, IChessPiece[][] board) {// ignore because it is inherited
+    public boolean isValidMove(Move move, IChessPiece[][] board) {//  XUE : ignore because it is inherited
 
         return true;
     }
