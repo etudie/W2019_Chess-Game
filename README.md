@@ -49,3 +49,6 @@ Contains main method that creates and displays the chess game GUI. Use chess pie
 
 ![](https://i.imgur.com/DFecr70.png)
 **UML Diagram**
+
+![](http://g.recordit.co/NGn9aPdpVp.gif)
+**GIF recording of Functionality**
