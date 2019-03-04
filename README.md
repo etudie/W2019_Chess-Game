@@ -47,5 +47,5 @@ Contains main method that creates and displays the chess game GUI. Use chess pie
 - Queen.java extends `ChessPiece`
 - Bishop.java extends `ChessPiece`
 
-![](https://i.imgur.com/AitJhee.png)
+![](https://i.imgur.com/DFecr70.png)
 **UML Diagram**
