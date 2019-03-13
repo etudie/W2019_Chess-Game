@@ -1,5 +1,9 @@
 # chessProject
 
+Last updated: 13 March 2019 
+- isValidMove() for Rook, Bishop, Knight
+- Emily working on Queen 
+
 Last updated: 04 March 2019 
 - Pawns on the Chessboard
 - isValidMove() for PAWN & KING
