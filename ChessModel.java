@@ -1,7 +1,14 @@
-package W19Project3GIVETOSTUDENTS;
+package chess;
 
+/*	XUE :
+	ChessModel.java
+This class is responsible for
+1. storing the chessboard
+2. implementing game logic
+3. implement methods from IChessModel interface
+ */
 public class ChessModel implements IChessModel {	 
-    private IChessPiece[][] board;
+    public static IChessPiece[][] board;
 	private Player player;
 
 	// declare other instance variables as needed
@@ -18,8 +25,37 @@ public class ChessModel implements IChessModel {
         board[7][5] = new Bishop(Player.WHITE);
         board[7][6] = new Knight (Player.WHITE);
         board[7][7] = new Rook(Player.WHITE);
+		board[6][0] = new Pawn(Player.WHITE, true);
+		board[6][1] = new Pawn(Player.WHITE, true);
+		board[6][2] = new Pawn(Player.WHITE, true);
+		board[6][3] = new Pawn(Player.WHITE, true);
+		board[6][4] = new Pawn(Player.WHITE, true);
+		board[6][5] = new Pawn(Player.WHITE, true);
+		board[6][6] = new Pawn(Player.WHITE, true);
+		board[6][7] = new Pawn(Player.WHITE, true);
+
+		board[0][0] = new Rook(Player.BLACK);
+		board[0][1] = new Knight(Player.BLACK);
+		board[0][2] = new Bishop(Player.BLACK);
+		board[0][3] = new Queen(Player.BLACK);
+		board[0][4] = new King(Player.BLACK);
+		board[0][5] = new Bishop(Player.BLACK);
+		board[0][6] = new Knight (Player.BLACK);
+		board[0][7] = new Rook(Player.BLACK);
+		board[1][0] = new Pawn(Player.BLACK, true);
+		board[1][1] = new Pawn(Player.BLACK, true);
+		board[1][2] = new Pawn(Player.BLACK, true);
+		board[1][3] = new Pawn(Player.BLACK, true);
+		board[1][4] = new Pawn(Player.BLACK, true);
+		board[1][5] = new Pawn(Player.BLACK, true);
+		board[1][6] = new Pawn(Player.BLACK, true);
+		board[1][7] = new Pawn(Player.BLACK, true);
+
 	}
 
+	// XUE : Displays Joption panel when game is complete
+	// XUE : HAS JUNIT testing
+	// XUE : Uses inCheck(); //Fixme : not confident :(
 	public boolean isComplete() {
 		boolean valid = false;
 		return valid;
@@ -28,7 +64,7 @@ public class ChessModel implements IChessModel {
 	public boolean isValidMove(Move move) {
 		boolean valid = false;
 
-		if (board[move.fromRow][move.fromColumn] != null)
+		if (board[move.fromRow][move.fromColumn] != null)		// XUE : initial check that it is not empty, no empty pieces move
 			if (board[move.fromRow][move.fromColumn].isValidMove(move, board) == true)
                 return true;
 
@@ -40,6 +76,7 @@ public class ChessModel implements IChessModel {
 		board[move.fromRow][move.fromColumn] = null;
 	}
 
+	//  XUE : Displays a JOPtion Panel when King is inCheck
 	public boolean inCheck(Player p) {
 		boolean valid = false;
 		return valid;
@@ -60,6 +97,13 @@ public class ChessModel implements IChessModel {
 
 	public IChessPiece pieceAt(int row, int column) {		
 		return board[row][column];
+	}
+
+	public boolean isOccupied(int r, int c){
+		if(board[r][c] != null)
+			return true;
+		return false;
+
 	}
 
 	public void setNextPlayer() {
