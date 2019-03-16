@@ -9,7 +9,7 @@ This class is responsible for
  */
 public class ChessModel implements IChessModel {	 
     public static IChessPiece[][] board;
-	private Player player;
+	public static Player player;
 
 	// declare other instance variables as needed
 
@@ -17,14 +17,14 @@ public class ChessModel implements IChessModel {
 		board = new IChessPiece[8][8];
 		player = Player.WHITE;
 
-        board[7][0] = new Rook(Player.WHITE);
-        board[7][1] = new Knight(Player.WHITE);
-        board[7][2] = new Bishop(Player.WHITE);
-        board[7][3] = new Queen(Player.WHITE);
-        board[7][4] = new King(Player.WHITE);
-        board[7][5] = new Bishop(Player.WHITE);
-        board[7][6] = new Knight (Player.WHITE);
-        board[7][7] = new Rook(Player.WHITE);
+		board[7][0] = new Rook(Player.WHITE);
+		board[7][1] = new Knight(Player.WHITE);
+		board[7][2] = new Bishop(Player.WHITE);
+		board[7][3] = new Queen(Player.WHITE);
+		board[7][4] = new King(Player.WHITE);
+		board[7][5] = new Bishop(Player.WHITE);
+		board[7][6] = new Knight (Player.WHITE);
+		board[7][7] = new Rook(Player.WHITE);
 		board[6][0] = new Pawn(Player.WHITE, true);
 		board[6][1] = new Pawn(Player.WHITE, true);
 		board[6][2] = new Pawn(Player.WHITE, true);
@@ -51,8 +51,47 @@ public class ChessModel implements IChessModel {
 		board[1][6] = new Pawn(Player.BLACK, true);
 		board[1][7] = new Pawn(Player.BLACK, true);
 
+
 	}
 
+	public void newGame(){
+
+		System.out.println("NEW GAME");
+		player = Player.WHITE;
+		for (int r = 0; r < 8; r++) {
+			if(r == 1)
+				for (int c = 0; c < 8; c++) {
+					setPiece(r, c, new Pawn(Player.BLACK, true));
+				}
+			if(r == 6)
+				for (int c = 0; c < 8; c++) {
+					setPiece(r, c, new Pawn(Player.WHITE, true));
+				}
+			if(r < 6 && r >1)
+				for (int c = 0; c < 8; c++) {
+					setPiece(r, c, null);
+				}
+		}
+			setPiece(7, 0, new Rook(Player.WHITE));
+			setPiece(7, 1, new Knight(Player.WHITE));
+			setPiece(7, 2, new Bishop(Player.WHITE));
+			setPiece(7, 3, new Queen(Player.WHITE));
+			setPiece(7, 4, new King(Player.WHITE));
+			setPiece(7, 5, new Bishop(Player.WHITE));
+			setPiece(7, 6, new Knight (Player.WHITE));
+			setPiece(7, 7, new Rook (Player.WHITE));
+
+		setPiece(0, 0, new Rook(Player.BLACK));
+		setPiece(0, 1, new Knight(Player.BLACK));
+		setPiece(0, 2, new Bishop(Player.BLACK));
+		setPiece(0, 3, new Queen(Player.BLACK));
+		setPiece(0, 4, new King(Player.BLACK));
+		setPiece(0, 5, new Bishop(Player.BLACK));
+		setPiece(0, 6, new Knight (Player.BLACK));
+		setPiece(0, 7, new Rook (Player.BLACK));
+
+
+	}
 	// XUE : Displays Joption panel when game is complete
 	// XUE : HAS JUNIT testing
 	// XUE : Uses inCheck(); //Fixme : not confident :(
@@ -65,7 +104,7 @@ public class ChessModel implements IChessModel {
 		boolean valid = false;
 
 		if (board[move.fromRow][move.fromColumn] != null)		// XUE : initial check that it is not empty, no empty pieces move
-			if (board[move.fromRow][move.fromColumn].isValidMove(move, board) == true)
+			if (board[move.fromRow][move.fromColumn].isValidMove(move, board))
                 return true;
 
 		return valid;

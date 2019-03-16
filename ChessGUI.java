@@ -19,7 +19,7 @@ public class ChessGUI {
         frame.getContentPane().add(panel);
 
         frame.setResizable(true);
-        frame.setPreferredSize(new Dimension(800, 800));
+        frame.setPreferredSize(new Dimension(1000, 800));
         frame.pack();
         frame.setVisible(true);
     }

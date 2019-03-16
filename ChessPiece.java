@@ -14,10 +14,17 @@ public abstract class ChessPiece implements IChessPiece {
         return owner;
     }
 
+    public Player currentPlayer(){
+        return ChessModel.player;
+    }
 
-    public boolean isValidMove(Move move, IChessPiece[][] board) {//  XUE : ignore because it is inherited
+    public boolean isValidMove(Move move, IChessPiece[][] board) {
+        // Check turn
+        if(player() == currentPlayer())
+            return true;
 
-        return true;
+        // Check if same place
+        return false;
     }
 
 

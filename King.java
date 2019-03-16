@@ -22,15 +22,21 @@ public class King extends ChessPiece {
 			if (player() == Player.BLACK)
 				if (Math.abs(move.fromRow - move.toRow) == 0 || Math.abs(move.fromRow - move.toRow) == 1) {
 					if (Math.abs(move.toColumn - move.fromColumn) == 1 || (move.toColumn - move.fromColumn) == 0) {
-						valid = true;
-						System.out.println("...moving 1 space...successful");
+						if(ChessModel.board[move.toRow][move.toColumn] == null ||
+								ChessModel.board[move.toRow][move.toColumn].player() == Player.WHITE ) {
+							valid = true;
+							System.out.println("...moving 1 space...successful");
+						}
 					}
 				}
 			if (player() == Player.WHITE)
 				if (Math.abs(move.fromRow - move.toRow) == 0 || Math.abs(move.fromRow - move.toRow) == 1) {
 					if (Math.abs(move.toColumn - move.fromColumn) == 1 || (move.toColumn - move.fromColumn) == 0) {
-						valid = true;
-						System.out.println("...moving 1 space...successful");
+						if(ChessModel.board[move.toRow][move.toColumn] == null||
+								ChessModel.board[move.toRow][move.toColumn].player() == Player.BLACK) {
+							valid = true;
+							System.out.println("...moving 1 space...successful");
+						}
 					}
 				}
 		if(move.fromRow == move.toRow && move.fromColumn == move.toColumn)
