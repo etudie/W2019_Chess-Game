@@ -10,7 +10,9 @@ This class is responsible for
 
 import java.awt.*;
 import java.awt.event.*;
+import java.net.SocketOption;
 import javax.swing.*;
+import java.awt.BorderLayout;
 
 public class ChessPanel extends JPanel {
 
@@ -31,7 +33,7 @@ public class ChessPanel extends JPanel {
     private ImageIcon bPawn;
     private ImageIcon bKnight;
 
-    private boolean firstTurnFlag;      // FIXME assume that it means first click 3/5
+    private boolean firstTurnFlag;
     private int fromRow;
     private int toRow;
     private int fromCol;
@@ -40,6 +42,7 @@ public class ChessPanel extends JPanel {
     private JButton undo;
     private JButton newGame;
     private JLabel lastMove;
+    private JLabel currentTurn;
     // declare other intance variables as needed
 
     private listener listener;
@@ -48,19 +51,37 @@ public class ChessPanel extends JPanel {
         model = new ChessModel();
         board = new JButton[model.numRows()][model.numColumns()];
         listener = new listener();
-        undo = new JButton("Undo");
-        newGame = new JButton("New Game");
-        lastMove = new JLabel("Last Move:  none");
-        createIcons();
 
+        // Buttons and JLabels
+        undo = new JButton("Undo");
+        undo.addActionListener(listener);
+        newGame = new JButton("New Game");
+        newGame.addActionListener(listener);
+
+        lastMove = new JLabel("Last Move:  none");
+        currentTurn = new JLabel("Turn:  White");
+
+        // Panels
         JPanel boardpanel = new JPanel();
+
         JPanel buttonpanel = new JPanel();
+        buttonpanel.setLayout(new BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
+        buttonpanel.add(Box.createRigidArea(new Dimension(30,40)));
+        setLayout(new BorderLayout());
+        newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lastMove.setAlignmentX(Component.CENTER_ALIGNMENT);
+        undo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         buttonpanel.add(newGame);
         buttonpanel.add(lastMove);
         buttonpanel.add(undo);
-        add(buttonpanel);
+        buttonpanel.add(currentTurn);
+
         boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns(), 1, 1));
+
+        createIcons();
+
         for (int r = 0; r < model.numRows(); r++) {
             for (int c = 0; c < model.numColumns(); c++) {
                 if (model.pieceAt(r, c) == null) {
@@ -71,14 +92,14 @@ public class ChessPanel extends JPanel {
                 else if (model.pieceAt(r, c).player() == Player.BLACK)
                     placeBlackPieces(r, c);
 
-
                 setBackGroundColor(r, c);
                 boardpanel.add(board[r][c]);
             }
         }
+        boardpanel.setPreferredSize(new Dimension(600, 550));
 
         add(boardpanel, BorderLayout.WEST);
-        boardpanel.setPreferredSize(new Dimension(600, 600));
+        add(buttonpanel, BorderLayout.CENTER);
 
         firstTurnFlag = true;
     }
@@ -162,9 +183,18 @@ public class ChessPanel extends JPanel {
         bKnight = new ImageIcon("./src/chess/images/bKnight.png");
     }
 
+    private void toggleSpace(int r, int c, boolean select) {
+        if (select) {
+            board[r][c].setBackground(Color.PINK);
+            System.out.println("Highlighting" + " [ " +  r  + " ] " + " [ " + c + " ] ");
+        } else {
+            setBackGroundColor(r, c);
+            System.out.println("Un-Highlighting" + " [ " + r  + " ] " + " [ " + c + " ] ");
+        }
+    }
+
     // method that updates the board
     private void displayBoard() {
-
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++)
                 if (model.pieceAt(r, c) == null)
@@ -216,26 +246,42 @@ public class ChessPanel extends JPanel {
     // inner class that represents action listener for buttons
     private class listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            if (newGame == event.getSource()) {
+                model.newGame();
+                displayBoard();
+            }
             for (int r = 0; r < model.numRows(); r++)
                 for (int c = 0; c < model.numColumns(); c++)
                     if (board[r][c] == event.getSource()) {
 
-                        if (firstTurnFlag == true) {
-                            fromRow = r;
-                            fromCol = c;
-                            firstTurnFlag = false;
-                        } else {
-                            toRow = r;
-                            toCol = c;
-                            firstTurnFlag = true;
-                            Move m = new Move(fromRow, fromCol, toRow, toCol);
-                            if ((model.isValidMove(m)) == true)
-                                model.move(m);
+                        // Only execute if space is occupied and it is the piece's turn OR it is not the first Turn
+                        if ((model.isOccupied(r, c) && model.pieceAt(r, c).player() == model.currentPlayer()) || !firstTurnFlag) {
 
+                            if (firstTurnFlag == true) {
+                                fromRow = r;
+                                fromCol = c;
+                                firstTurnFlag = false;
+                                if (model.pieceAt(r, c).player() == model.currentPlayer())
+                                    toggleSpace(fromRow, fromCol, true);
 
-                            lastMove.setText(m.toString()); // FIXME
-                            displayBoard();
+                            } else {
+                                toRow = r;
+                                toCol = c;
+                                firstTurnFlag = true;
 
+                                Move m = new Move(fromRow, fromCol, toRow, toCol);
+                                toggleSpace(fromRow, fromCol, false);
+                                if ((model.isValidMove(m)) == true) {
+
+                                    //toggleSpace(fromRow, fromCol, false);
+                                    model.move(m);
+                                    model.setNextPlayer();
+                                }
+                                lastMove.setText(m.toString()); // FIXME
+                                currentTurn.setText("Turn : " + model.currentPlayer()); // FIXME
+                                displayBoard();
+
+                            }
                         }
                     }
         }
