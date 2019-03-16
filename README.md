@@ -1,13 +1,14 @@
+
 # chessProject
 
-Last updated: 13 March 2019 
-- isValidMove() for Rook, Bishop, Knight
-- Emily working on Queen 
-
-Last updated: 04 March 2019 
-- Pawns on the Chessboard
-- isValidMove() for PAWN & KING
-- Emily working on Queen & Rook , Amela on Knight & Bishop
+Last updated: 16 March 2019 
+- Highlight Space when selected 
+- Displays current turn colour 
+- inCheck() for pawn, knight, rook
+- Pawns no longer capture same coloured pieces 
+- Pieces rightfully operates in turns (white then black then white, etc. ) 
+Read full Log here
+- New Game Functionality
 
 |PAWN| KING |
 |--|--|
@@ -15,8 +16,25 @@ Last updated: 04 March 2019
 | - else, move 1 space | - except when end of row  |
 | - moves diagonally to capture  | - can move forwards and backwards |
 | - cannot move backwards |  |
+| - is promoted at end of board to another piece |  |
 
-![](http://g.recordit.co/Q7A2C6SdWL.gif)
+|QUEEN| KNIGHT|
+|--|--|
+| - moves diagonally, forward, backwards  | - 2 away horizontally and  1 vertically |
+| - unlimited paces except end of board | - or 2 vertically and 1 horizontally.  |
+|   | - moves in opposite colors|
+
+
+|ROOK| BISHOP|
+|--|--|
+| - moves horizontally / vertically | - moves diagonally |
+| - unlimited paces| |
+| - involved in castle-ing | |
+
+
+
+
+![](https://i.ibb.co/XSnx4GY/one.gif)
 **GIF recording of Functionality**
 
 No changes below this line
@@ -30,6 +48,12 @@ working with a group on a project
 
 ## Description
 A program that implements a simple GUI program that allows two players to play a chess. The challenge was to design and organize pieces into a class hierarchy that utilizes polymorphism. 
+
+**FEATURES**
+
+HIGHLIGHTING
+
+![highlight](https://i.imgur.com/OiuFpYe.png)
 
 - **IChessModel.java ( UNCHANGED )** 
 - **IchessPiece.java ( UNCHANGED )** 
@@ -74,4 +98,4 @@ Contains main method that creates and displays the chess game GUI. Use chess pie
 
 | BEFORE | AFTER |
 |--|--|
-| ![BEFORE](https://camo.githubusercontent.com/13df35400361913ddeb16bc09a0de6bcb43104dd/687474703a2f2f672e7265636f726469742e636f2f4e476e396150647056702e676966) | ![AFTER](http://g.recordit.co/Q7A2C6SdWL.gif) |
+| ![BEFORE](http://g.recordit.co/Q7A2C6SdWL.gif) | ![AFTER](https://i.ibb.co/XSnx4GY/one.gif) |
