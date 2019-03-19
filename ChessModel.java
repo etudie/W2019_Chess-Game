@@ -1,14 +1,31 @@
 package Project3;
+import java.util.ArrayList;
 
 public class ChessModel implements IChessModel {
     private IChessPiece[][] board; // ask about, probs shouldn't be static
     private Player player;
+    private ArrayList<String> deletedPiece;
+    private ArrayList<Integer> previousRow;
+    private ArrayList<Integer> previousColumn;
+    private ArrayList<Player> capturedPlayer;
+//    private ArrayList<String> movedPiece;
+//    private ArrayList<String> movedPlayer;
+    private ArrayList<Integer> newRow;
+    private ArrayList<Integer> newCol;
 
     // declare other instance variables as needed
 
     public ChessModel() {
         board = new IChessPiece[8][8];
         player = Player.WHITE;
+        deletedPiece = new ArrayList<>();
+        previousRow = new ArrayList<>();
+        previousColumn = new ArrayList<>();
+        capturedPlayer = new ArrayList<>();
+//        movedPiece = new ArrayList<>();
+//        movedPlayer = new ArrayList<>();
+        newRow = new ArrayList<>();
+        newCol = new ArrayList<>();
 
         board[7][0] = new Rook(Player.WHITE);
         board[7][1] = new Knight(Player.WHITE);
@@ -81,7 +98,78 @@ public class ChessModel implements IChessModel {
         setPiece(0, 6, new Knight (Player.BLACK));
         setPiece(0, 7, new Rook (Player.BLACK));
 
+    }
 
+    public void undo() {
+        if (previousRow.isEmpty())
+            return;
+        int index = 0;
+        int fromRow = 0;
+        int fromCol = 0;
+        int toRow = 0;
+        int toCol = 0;
+        String deleted = "";
+
+        while (index < previousRow.size()-1 && previousRow.get(index) != null)
+            index++;
+
+        fromRow = newRow.get(index);
+        fromCol = newCol.get(index);
+        toRow = previousRow.get(index);
+        toCol = previousColumn.get(index);
+
+        move(new Move(fromRow, fromCol, toRow, toCol));
+        board[fromRow][fromCol] = null;
+        setPiece(fromRow, fromCol, null);
+        if (board[toRow][toCol].type().equals("Pawn"))
+            if (toRow == 1 || toRow == 6)
+                setPiece(toRow, toCol, new Pawn(player.next(), true));
+
+        if (deletedPiece.get(index) != null) {
+            deleted = deletedPiece.get(index);
+            if (deleted.equals("King"))
+                setPiece(fromRow, fromCol, new King(capturedPlayer.get(index)));
+            if (deleted.equals("Queen"))
+                setPiece(fromRow, fromCol, new Queen(capturedPlayer.get(index)));
+            if (deleted.equals("Knight"))
+                setPiece(fromRow, fromCol, new Knight(capturedPlayer.get(index)));
+            if (deleted.equals("Rook"))
+                setPiece(fromRow, fromCol, new Rook(capturedPlayer.get(index)));
+            if (deleted.equals("Pawn")) {
+                if (fromCol == 6 || fromCol == 1)
+                    setPiece(fromRow, fromCol, new Pawn(capturedPlayer.get(index), true));
+                setPiece(fromRow, fromCol, new Pawn(capturedPlayer.get(index), false));
+            }
+            if (deleted.equals("Bishop"))
+                setPiece(fromRow, fromCol, new Bishop(capturedPlayer.get(index)));
+        }
+        setNextPlayer();
+
+        deleteMove(index);
+    }
+
+    public void saveMove(int row, int col, int nextRow, int nextCol) {
+        previousRow.add(row);
+        previousColumn.add(col);
+        newRow.add(nextRow);
+        newCol.add(nextCol);
+        if (board[nextRow][nextCol] != null) {
+            deletedPiece.add(board[nextRow][nextCol].type());
+            capturedPlayer.add(board[nextRow][nextCol].player());
+        }
+        else {
+            deletedPiece.add(null);
+            capturedPlayer.add(null);
+        }
+    }
+
+    private void deleteMove(int index) {
+        previousRow.remove(index);
+        previousColumn.remove(index);
+        newRow.remove(index);
+        newCol.remove(index);
+        deletedPiece.remove(index);
+        capturedPlayer.remove(index);
     }
 
     public boolean isComplete() {

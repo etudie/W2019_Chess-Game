@@ -18,46 +18,47 @@ public class Pawn extends ChessPiece {
     // determines if the move is valid for a pawn piece
     public boolean isValidMove(Move move, IChessPiece[][] board) {
         boolean valid = false;
-        if (!super.isValidMove(move, board))
-            return false;
 
-        System.out.print("...moving PAWN");
+        if (super.isValidMove(move, board)) {
 
-        //  MOVING FORWARD //
-        if (move.toColumn == move.fromColumn) {
-            if (player() == Player.WHITE)
-                if (firstMove) {    // move 2 spaces if want to
-                    if ((move.toRow == move.fromRow - 1) || (move.toRow == move.fromRow - 2)) {
-                        valid = true;
-                        System.out.println("...2 spaces... SUCCESS");
-                    }
-                    firstMove = false;      // disables the flag for remaining of the game
-                } else {        // move once each time
-                    if (move.toRow == move.fromRow - 1) {
-                        valid = true;
-                        System.out.println("...1 space... SUCCESS");
-                    }
-                }
+            System.out.print("...moving PAWN");
 
-            if (player() == Player.BLACK)
-                if (firstMove) {
-                    if ((move.toRow == move.fromRow + 1) || (move.toRow == move.fromRow + 2)) {
-                        valid = true;
-                        System.out.println("...2 spaces... SUCCESS");
+            //  MOVING FORWARD //
+            if (move.toColumn == move.fromColumn) {
+                if (player() == Player.WHITE)
+                    if (firstMove) {    // move 2 spaces if want to
+                        if ((move.toRow == move.fromRow - 1) || (move.toRow == move.fromRow - 2)) {
+                            valid = true;
+                            firstMove = false;
+                            System.out.println("...2 spaces... SUCCESS");
+                        }
+                    } else {        // move once each time
+                        if (move.toRow == move.fromRow - 1) {
+                            valid = true;
+                            System.out.println("...1 space... SUCCESS");
+                        }
                     }
-                    firstMove = false;
-                } else {
-                    if (move.toRow == move.fromRow + 1) {
-                        valid = true;
-                        System.out.println("...1 space... SUCCESS");
+
+                if (player() == Player.BLACK)
+                    if (firstMove) {
+                        if ((move.toRow == move.fromRow + 1) || (move.toRow == move.fromRow + 2)) {
+                            valid = true;
+                            firstMove = false;
+                            System.out.println("...2 spaces... SUCCESS");
+                        }
+                    } else {
+                        if (move.toRow == move.fromRow + 1) {
+                            valid = true;
+                            System.out.println("...1 space... SUCCESS");
+                        }
                     }
-                }
+            }
+            // MOVING TO CAPTURE //
+            if (ifCapture(move, board))
+                valid = true;
+            if (!valid)
+                System.out.println("...invalid move!");
         }
-        // MOVING TO CAPTURE //
-        if (ifCapture(move, board))
-            valid = true;
-        if (!valid)
-            System.out.println("...invalid move!");
         return valid;
     }
 

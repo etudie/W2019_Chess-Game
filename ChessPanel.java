@@ -10,7 +10,6 @@ This class is responsible for
 
 import java.awt.*;
 import java.awt.event.*;
-import java.net.SocketOption;
 import javax.swing.*;
 import java.awt.BorderLayout;
 
@@ -67,7 +66,6 @@ public class ChessPanel extends JPanel {
         JPanel buttonpanel = new JPanel();
         buttonpanel.setLayout(new BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
         buttonpanel.add(Box.createRigidArea(new Dimension(30,40)));
-        setLayout(new BorderLayout());
 
         buttonpanel.add(newGame);
         buttonpanel.add(lastMove);
@@ -79,7 +77,7 @@ public class ChessPanel extends JPanel {
         currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
-        boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns(), 1, 1));
+        boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns()));
 
         createIcons();
 
@@ -99,8 +97,9 @@ public class ChessPanel extends JPanel {
         }
         boardpanel.setPreferredSize(new Dimension(600, 550));
 
-        add(boardpanel, BorderLayout.WEST);
-        add(buttonpanel, BorderLayout.CENTER);
+        setLayout(new BorderLayout());
+        add(boardpanel, BorderLayout.CENTER);
+        add(buttonpanel, BorderLayout.EAST);
 
         firstTurnFlag = true;
     }
@@ -241,10 +240,8 @@ public class ChessPanel extends JPanel {
                 repaint();
             }
         }
-        if (model.inCheck(Player.BLACK))
-            JOptionPane.showMessageDialog(null, "Black in Check");
-        if (model.inCheck(Player.WHITE))
-            JOptionPane.showMessageDialog(null, "White in Check");
+        if (model.inCheck(model.currentPlayer()))
+            JOptionPane.showMessageDialog(null, "King in Check");
     }
 
     // inner class that represents action listener for buttons
@@ -252,6 +249,12 @@ public class ChessPanel extends JPanel {
         public void actionPerformed(ActionEvent event) {
             if (newGame == event.getSource()) {
                 model.newGame();
+                currentTurn.setText("Turn: White");
+                lastMove.setText("Last Move: ");
+                displayBoard();
+            }
+            if (undo == event.getSource()) {
+                model.undo();
                 displayBoard();
             }
             for (int r = 0; r < model.numRows(); r++)
@@ -277,8 +280,10 @@ public class ChessPanel extends JPanel {
                                 toggleSpace(fromRow, fromCol, false);
                                 if ((model.isValidMove(m)) == true) {
 
-                                    //toggleSpace(fromRow, fromCol, false);
+//                                    toggleSpace(fromRow, fromCol, false);
+                                    model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.move(m);
+//                                    model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.setNextPlayer();
                                 }
                                 lastMove.setText(m.toString()); // FIXME
