@@ -8,8 +8,8 @@ This class is responsible for
 3. implement methods from IChessModel interface
  */
 public class ChessModel implements IChessModel {	 
-    public static IChessPiece[][] board;
-	public static Player player;
+    private IChessPiece[][] board;
+	private Player player;
 
 	// declare other instance variables as needed
 
@@ -97,6 +97,10 @@ public class ChessModel implements IChessModel {
 	// XUE : Uses inCheck(); //Fixme : not confident :(
 	public boolean isComplete() {
 		boolean valid = false;
+		if (inCheck(currentPlayer())) {
+			valid = true;
+		}
+
 		return valid;
 	}
 
@@ -118,9 +122,202 @@ public class ChessModel implements IChessModel {
 	//  XUE : Displays a JOPtion Panel when King is inCheck
 	public boolean inCheck(Player p) {
 		boolean valid = false;
+		int kingRow = 0;
+		int kingCol = 0;
+
+		for (int r = 0; r < numRows(); r++) {
+			for (int c = 0; c < numColumns(); c++) {
+				if (board[r][c] != null && board[r][c].type().equals("King")
+						&& board[r][c].player().equals(p)) {
+					kingRow = r;
+					kingCol = c;
+					break;
+				}
+			}
+		}
+		if (checkForPawn(p, kingRow, kingCol))
+			valid = true;
+		if (checkForKnight(p, kingRow, kingCol))
+			valid = true;
+		if (checkForRook(p, kingRow, kingCol))
+			valid = true;
+		if (checkForBishop(p, kingRow, kingCol))
+			valid = true;
+
 		return valid;
 	}
 
+	private boolean checkForPawn(Player p, int row, int col) {
+
+		if (p.equals(Player.WHITE)) {
+			if (row-1 >= 0 && col-1 >= 0 && board[row-1][col-1] != null
+					&& board[row-1][col-1].type().equals("Pawn") &&
+					board[row-1][col-1].player().equals(Player.BLACK)) {
+				return true;
+			}
+			else if (row-1 >= 0 && board[row-1][col] != null && board[row-1][col].type().equals("Pawn")
+					&& board[row-1][col].player().equals(Player.BLACK))
+				return true;
+			else return row - 1 >= 0 && col + 1 < numColumns() && board[row - 1][col + 1] != null
+						&& board[row - 1][col + 1].type().equals("Pawn") && board[row - 1][col + 1].player().equals(Player.BLACK);
+		}
+
+		if (p.equals(Player.BLACK)) {
+			if (row+1 < numRows() && col-1 >= 0 && board[row+1][col-1] != null
+					&& board[row+1][col-1].type().equals("Pawn") &&
+					board[row+1][col-1].player().equals(Player.WHITE)) {
+				return true;
+			}
+			else if (row+1 >= 0 && board[row+1][col] != null && board[row+1][col].type().equals("Pawn")
+					&& board[row+1][col].player().equals(Player.WHITE))
+				return true;
+			else return row + 1 >= 0 && col + 1 < numColumns() && board[row + 1][col + 1] != null
+						&& board[row + 1][col + 1].type().equals("Pawn") && board[row + 1][col + 1].player().equals(Player.WHITE);
+		}
+
+		return false;
+	}
+
+	private boolean checkForKnight(Player p, int row, int col) {
+		if (row-2 >= 0 && col-1 >= 0 && board[row-2][col-1] != null &&
+				board[row-2][col-1].type().equals("Knight") &&
+				!board[row-2][col-1].player().equals(p)) {
+			return true;
+		}
+		else if (row-2 >= 0 && col+1 < numColumns() && board[row-2][col+1] != null
+				&& board[row-2][col+1].type().equals("Knight") &&
+				!board[row-2][col+1].player().equals(p)) {
+			return true;
+		}
+		else if (row-1 >= 0 && col-2 >= 0 && board[row-1][col-2] != null
+				&& board[row-1][col-2].type().equals("Knight")
+				&& !board[row-1][col-2].player().equals(p)) {
+			return true;
+		}
+		else if (row-1 >= 0 && col+2 < numColumns() && board[row-1][col+2] != null
+				&& board[row-1][col+2].type().equals("Knight")
+				&& !board[row-1][col+2].player().equals(p)) {
+			return true;
+		}
+		else if (row+2 < numRows() && col-1 >= 0 && board[row+2][col-1] != null &&
+				board[row+2][col-1].type().equals("Knight") &&
+				!board[row+2][col-1].player().equals(p)) {
+			return true;
+		}
+		else if (row+2 < numRows() && col+1 < numColumns() && board[row+2][col+1] != null
+				&& board[row+2][col+1].type().equals("Knight") &&
+				!board[row+2][col+1].player().equals(p)) {
+			return true;
+		}
+		else if (row+1 < numRows() && col-2 >= 0 && board[row+1][col-2] != null
+				&& board[row+1][col-2].type().equals("Knight")
+				&& !board[row+1][col-2].player().equals(p)) {
+			return true;
+		}
+		else return row + 1 < numRows() && col + 2 < numColumns()
+					&& board[row + 1][col + 2] != null
+					&& board[row + 1][col + 2].type().equals("Knight")
+					&& !board[row + 1][col + 2].player().equals(p);
+
+
+	}
+
+	private boolean checkForRook(Player p, int row, int col) {
+		int origRow = row;
+		int origCol = col;
+
+		while(row+1 < numRows() && board[row+1][col] == null)
+			row++;
+		if (row+1 < numRows() && (board[row+1][col].type().equals("Rook")
+				|| board[row+1][col].type().equals("Queen"))
+				&& !board[row+1][col].player().equals(p))
+			return true;
+
+		row = origRow;
+
+		while (row-1 >= 0 && board[row-1][col] == null)
+			row--;
+		if (row-1 >= 0 && (board[row-1][col].type().equals("Rook")
+				|| board[row-1][col].type().equals("Queen"))
+				&& !board[row-1][col].player().equals(p))
+			return true;
+
+		row = origRow;
+
+		while (col+1 < numColumns() && board[row][col+1] == null)
+			col++;
+		if (col+1 < numColumns() && (board[row][col+1].type().equals("Rook")
+				|| board[row][col+1].type().equals("Queen"))
+				&& !board[row][col+1].player().equals(p))
+			return true;
+
+		col = origCol;
+
+		while (col-1 >= 0 && board[row][col-1] == null)
+			col--;
+		if (col-1 >= 0 && (board[row][col-1].type().equals("Rook")
+				|| board[row][col-1].type().equals("Queen"))
+				&& !board[row][col-1].player().equals(p))
+			return true;
+
+		return false;
+	}
+
+	private boolean checkForBishop(Player p, int row, int col) {
+		int origRow = row;
+		int origCol = col;
+
+		while (row+1 < numRows() && col+1 < numColumns() && board[row+1][col+1] == null) {
+			row++;
+			col++;
+		}
+		if (row+1 < numRows() && col+1 < numColumns() && board[row+1][col+1] != null
+				&& (board[row+1][col+1].type().equals("Bishop")
+				|| board[row+1][col+1].type().equals("Queen"))
+				&& !board[row+1][col+1].player().equals(p))
+			return true;
+
+		row = origRow;
+		col = origCol;
+
+		while (row-1 >= 0 && col-1 >= 0 && board[row-1][col-1] == null) {
+			row--;
+			col--;
+		}
+		if (row-1 >= 0 && col-1 >= 0 && board[row-1][col-1] != null
+				&& !board[row-1][col-1].player().equals(p)
+				&& (board[row-1][col-1].type().equals("Bishop")
+				|| board[row-1][col-1].type().equals("Queen")))
+			return true;
+
+		row = origRow;
+		col = origCol;
+
+		while (row+1 < numRows() && col-1 >= 0 && board[row+1][col-1] == null) {
+			row++;
+			col--;
+		}
+		if (row+1 < numRows() && col-1 >= 0 && board[row+1][col-1] != null
+				&& !board[row+1][col-1].player().equals(p)
+				&& (board[row+1][col-1].type().equals("Bishop")
+				|| board[row+1][col-1].type().equals("Queen")))
+			return true;
+
+		row = origRow;
+		col = origCol;
+
+		while (row-1 >= 0 && col+1 < numColumns() && board[row-1][col+1] == null) {
+			row--;
+			col++;
+		}
+		if (row-1 >= 0 && col+1 < numColumns() && board[row-1][col+1] != null
+				&& !board[row-1][col+1].player().equals(p)
+				&& (board[row-1][col+1].type().equals("Bishop")
+				|| board[row-1][col+1].type().equals("Queen")))
+			return true;
+
+		return false;
+	}
 
 	public Player currentPlayer() {
 		return player;
@@ -148,6 +345,8 @@ public class ChessModel implements IChessModel {
 	public void setNextPlayer() {
 		player = player.next();
 	}
+
+
 
 	public void setPiece(int row, int column, IChessPiece piece) {
 		board[row][column] = piece;

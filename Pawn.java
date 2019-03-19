@@ -32,7 +32,7 @@ public class Pawn extends ChessPiece {
                     firstMove = false;      // disables the flag for remaining of the game
                 } else {        // move once each time
                     if (move.toRow == move.fromRow - 1) {
-                        if(ChessModel.board[move.toRow][move.toColumn] == null) {
+                        if(board[move.toRow][move.toColumn] == null) {
                             valid = true;
                             System.out.println("...1 space... SUCCESS");
                         }
@@ -48,7 +48,7 @@ public class Pawn extends ChessPiece {
                     firstMove = false;
                 } else {
                     if (move.toRow == move.fromRow + 1) {
-                        if(ChessModel.board[move.toRow][move.toColumn] == null) {
+                        if(board[move.toRow][move.toColumn] == null) {
                             valid = true;
                             System.out.println("...1 space... SUCCESS");
                         }
@@ -57,7 +57,7 @@ public class Pawn extends ChessPiece {
         }
 
         // MOVING TO CAPTURE //
-        if (ifCapture(move))
+        if (ifCapture(move, board))
             valid = true;
         if (!valid)
             System.out.println("...invalid move!");
@@ -66,12 +66,12 @@ public class Pawn extends ChessPiece {
         return valid;
     }
 
-    private boolean ifCapture(Move move) {
+    private boolean ifCapture(Move move,IChessPiece[][] board) {
         if (player() == Player.BLACK) {
             if (move.toRow == move.fromRow + 1)
                 if ((move.toColumn == move.fromColumn - 1) || (move.toColumn == move.fromColumn + 1)) {
-                    if (ChessModel.board[move.toRow][move.toColumn] != null &&
-                            ChessModel.board[move.toRow][move.toColumn].player() == Player.WHITE) {
+                    if (board[move.toRow][move.toColumn] != null &&
+                            board[move.toRow][move.toColumn].player() == Player.WHITE) {
                         return true;
                     }
                 }
@@ -79,8 +79,8 @@ public class Pawn extends ChessPiece {
         if (player() == Player.WHITE) {
             if (move.toRow == move.fromRow - 1)
                 if ((move.toColumn == move.fromColumn - 1) || (move.toColumn == move.fromColumn + 1)) {
-                    if (ChessModel.board[move.toRow][move.toColumn] != null &&
-                            ChessModel.board[move.toRow][move.toColumn].player() == Player.BLACK) {
+                    if (board[move.toRow][move.toColumn] != null &&
+                            board[move.toRow][move.toColumn].player() == Player.BLACK) {
                         return true;
                     }
                 }

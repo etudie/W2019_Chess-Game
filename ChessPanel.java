@@ -66,7 +66,7 @@ public class ChessPanel extends JPanel {
 
         JPanel buttonpanel = new JPanel();
         buttonpanel.setLayout(new BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
-        buttonpanel.add(Box.createRigidArea(new Dimension(30,40)));
+        buttonpanel.add(Box.createRigidArea(new Dimension(30, 40)));
         setLayout(new BorderLayout());
         newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
         lastMove.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -186,10 +186,10 @@ public class ChessPanel extends JPanel {
     private void toggleSpace(int r, int c, boolean select) {
         if (select) {
             board[r][c].setBackground(Color.PINK);
-            System.out.println("Highlighting" + " [ " +  r  + " ] " + " [ " + c + " ] ");
+            System.out.println("Highlighting" + " [ " + r + " ] " + " [ " + c + " ] ");
         } else {
             setBackGroundColor(r, c);
-            System.out.println("Un-Highlighting" + " [ " + r  + " ] " + " [ " + c + " ] ");
+            System.out.println("Un-Highlighting" + " [ " + r + " ] " + " [ " + c + " ] ");
         }
     }
 
@@ -240,6 +240,10 @@ public class ChessPanel extends JPanel {
         }
 
         repaint();
+        if (model.inCheck(Player.BLACK))
+            JOptionPane.showMessageDialog(null, "Black in Check");
+        if (model.inCheck(Player.WHITE))
+            JOptionPane.showMessageDialog(null, "White in Check");
 
     }
 
@@ -255,7 +259,8 @@ public class ChessPanel extends JPanel {
                     if (board[r][c] == event.getSource()) {
 
                         // Only execute if space is occupied and it is the piece's turn OR it is not the first Turn
-                        if ((model.isOccupied(r, c) && model.pieceAt(r, c).player() == model.currentPlayer()) || !firstTurnFlag) {
+                        if ((model.isOccupied(r, c) && model.pieceAt(r, c).player() == model.currentPlayer())
+                                || !firstTurnFlag) {
 
                             if (firstTurnFlag == true) {
                                 fromRow = r;

@@ -14,17 +14,20 @@ public abstract class ChessPiece implements IChessPiece {
         return owner;
     }
 
-    public Player currentPlayer(){
-        return ChessModel.player;
-    }
+
 
     public boolean isValidMove(Move move, IChessPiece[][] board) {
         // Check turn
-        if(player() == currentPlayer())
-            return true;
+        if (move.toRow >= 8 || move.toColumn >= 8)
+            return false;
+        if (move.toRow == move.fromRow && move.toColumn == move.fromColumn)
+            return false;
+        if (board[move.toRow][move.toColumn] != null &&
+                !board[move.toRow][move.toColumn].player().equals(player().next()))
+            return false;
 
-        // Check if same place
-        return false;
+
+        return true;
     }
 
 
