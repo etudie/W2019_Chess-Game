@@ -256,6 +256,7 @@ public class ChessPanel extends JPanel {
             if (undo == event.getSource()) {
                 model.undo();
                 displayBoard();
+                currentTurn.setText("Turn : " + model.currentPlayer());
             }
             for (int r = 0; r < model.numRows(); r++)
                 for (int c = 0; c < model.numColumns(); c++)
@@ -283,7 +284,6 @@ public class ChessPanel extends JPanel {
 //                                    toggleSpace(fromRow, fromCol, false);
                                     model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.move(m);
-//                                    model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.setNextPlayer();
                                 }
                                 lastMove.setText(m.toString()); // FIXME

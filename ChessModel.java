@@ -8,8 +8,6 @@ public class ChessModel implements IChessModel {
     private ArrayList<Integer> previousRow;
     private ArrayList<Integer> previousColumn;
     private ArrayList<Player> capturedPlayer;
-//    private ArrayList<String> movedPiece;
-//    private ArrayList<String> movedPlayer;
     private ArrayList<Integer> newRow;
     private ArrayList<Integer> newCol;
 
@@ -22,8 +20,6 @@ public class ChessModel implements IChessModel {
         previousRow = new ArrayList<>();
         previousColumn = new ArrayList<>();
         capturedPlayer = new ArrayList<>();
-//        movedPiece = new ArrayList<>();
-//        movedPlayer = new ArrayList<>();
         newRow = new ArrayList<>();
         newCol = new ArrayList<>();
 
