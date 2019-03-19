@@ -94,13 +94,13 @@ public class ChessModel implements IChessModel {
     }
 
     public boolean isValidMove(Move move) {
-        boolean valid = false;
 
         if (board[move.fromRow][move.fromColumn] != null)
-            if (board[move.fromRow][move.fromColumn].isValidMove(move, board) == true)
+            if ((board[move.fromRow][move.fromColumn].player().equals(currentPlayer()))
+                    && board[move.fromRow][move.fromColumn].isValidMove(move, board))
                 return true;
 
-        return valid;
+        return false;
     }
 
     public void move(Move move) {
