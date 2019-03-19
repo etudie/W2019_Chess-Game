@@ -7,30 +7,8 @@ Last updated: 16 March 2019
 - inCheck() for pawn, knight, rook
 - Pawns no longer capture same coloured pieces 
 - Pieces rightfully operates in turns (white then black then white, etc. ) 
-Read full Log here
-- New Game Functionality
 
-|PAWN| KING |
-|--|--|
-| - if first turn, move 2 spaces  | - move to one of surrounding 8 spaces |
-| - else, move 1 space | - except when end of row  |
-| - moves diagonally to capture  | - can move forwards and backwards |
-| - cannot move backwards |  |
-| - is promoted at end of board to another piece |  |
-
-|QUEEN| KNIGHT|
-|--|--|
-| - moves diagonally, forward, backwards  | - 2 away horizontally and  1 vertically |
-| - unlimited paces except end of board | - or 2 vertically and 1 horizontally.  |
-|   | - moves in opposite colors|
-
-
-|ROOK| BISHOP|
-|--|--|
-| - moves horizontally / vertically | - moves diagonally |
-| - unlimited paces| |
-| - involved in castle-ing | |
-
+Read full Log [here](https://github.com/etudie/chessProject/wiki/Full-Update-List)
 
 
 
