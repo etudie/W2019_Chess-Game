@@ -323,6 +323,12 @@ public class ChessModel implements IChessModel {
         return board[row][column];
     }
 
+    public boolean isOccupied(int r, int c) {
+        if (board[r][c] != null)
+            return true;
+        return false;
+    }
+
     public void setNextPlayer() {
         player = player.next();
     }

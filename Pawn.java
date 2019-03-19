@@ -18,6 +18,8 @@ public class Pawn extends ChessPiece {
     // determines if the move is valid for a pawn piece
     public boolean isValidMove(Move move, IChessPiece[][] board) {
         boolean valid = false;
+        if (!super.isValidMove(move, board))
+            return false;
 
         System.out.print("...moving PAWN");
 

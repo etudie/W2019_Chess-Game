@@ -1,19 +1,23 @@
 package Project3;
-
-import jdk.nashorn.internal.scripts.JO;
+/*	ChessPanel.java
+This class is responsible for
+1. presenting the GUI
+2. respond to user actions
+3. updates view
+4. allows white to move before black
+5. allows only valid moves
+ */
 
 import java.awt.*;
 import java.awt.event.*;
+import java.net.SocketOption;
 import javax.swing.*;
+import java.awt.BorderLayout;
 
 public class ChessPanel extends JPanel {
 
     private JButton[][] board;
     private ChessModel model;
-
-    private JButton undo;
-    private JButton newGame;
-    private JLabel lastMove;
 
     private ImageIcon wRook;
     private ImageIcon wBishop;
@@ -34,7 +38,12 @@ public class ChessPanel extends JPanel {
     private int toRow;
     private int fromCol;
     private int toCol;
-    // declare other instance variables as needed
+
+    private JButton undo;
+    private JButton newGame;
+    private JLabel lastMove;
+    private JLabel currentTurn;
+    // declare other intance variables as needed
 
     private listener listener;
 
@@ -43,41 +52,56 @@ public class ChessPanel extends JPanel {
         board = new JButton[model.numRows()][model.numColumns()];
         listener = new listener();
 
+        // Buttons and JLabels
         undo = new JButton("Undo");
         undo.addActionListener(listener);
         newGame = new JButton("New Game");
         newGame.addActionListener(listener);
 
-        createIcons();
+        lastMove = new JLabel("Last Move:  none");
+        currentTurn = new JLabel("Turn:  White");
 
+        // Panels
         JPanel boardpanel = new JPanel();
+
         JPanel buttonpanel = new JPanel();
-        boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns(), 1, 1));
-        buttonpanel.setLayout(new GridLayout(1,3));
-        buttonpanel.add(undo);
+        buttonpanel.setLayout(new BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
+        buttonpanel.add(Box.createRigidArea(new Dimension(30,40)));
+        setLayout(new BorderLayout());
+
         buttonpanel.add(newGame);
+        buttonpanel.add(lastMove);
+        buttonpanel.add(undo);
+        buttonpanel.add(currentTurn);
+        newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lastMove.setAlignmentX(Component.CENTER_ALIGNMENT);
+        undo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+        boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns(), 1, 1));
+
+        createIcons();
 
         for (int r = 0; r < model.numRows(); r++) {
             for (int c = 0; c < model.numColumns(); c++) {
                 if (model.pieceAt(r, c) == null) {
                     board[r][c] = new JButton("", null);
                     board[r][c].addActionListener(listener);
-                    }
-                else if (model.pieceAt(r, c).player() == Player.BLACK) {
-                    placeBlackPieces(r,c);
-                }
-                else if (model.pieceAt(r, c).player() == Player.WHITE)
+                } else if (model.pieceAt(r, c).player() == Player.WHITE)
                     placeWhitePieces(r, c);
+                else if (model.pieceAt(r, c).player() == Player.BLACK)
+                    placeBlackPieces(r, c);
 
                 setBackGroundColor(r, c);
                 boardpanel.add(board[r][c]);
             }
         }
+        boardpanel.setPreferredSize(new Dimension(600, 550));
 
-        setLayout(new BorderLayout());
-        add(boardpanel, BorderLayout.CENTER);
-        boardpanel.setPreferredSize(new Dimension(800, 800));
-        add(buttonpanel, BorderLayout.SOUTH);
+        add(boardpanel, BorderLayout.WEST);
+        add(buttonpanel, BorderLayout.CENTER);
+
         firstTurnFlag = true;
     }
 
@@ -226,41 +250,44 @@ public class ChessPanel extends JPanel {
     // inner class that represents action listener for buttons
     private class listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            if (newGame == event.getSource()) {
+                model.newGame();
+                displayBoard();
+            }
             for (int r = 0; r < model.numRows(); r++)
                 for (int c = 0; c < model.numColumns(); c++)
-                    if (board[r][c] == event.getSource())
-                        if (firstTurnFlag == true) {
-                            fromRow = r;
-                            fromCol = c;
-                            firstTurnFlag = false;
-//                            if (model.pieceAt(r,c) != null &&
-//                                    model.pieceAt(r, c).player() == model.currentPlayer())
-//                                toggleSpace(fromRow, fromCol, true);
+                    if (board[r][c] == event.getSource()) {
 
-                        } else {
-                            toRow = r;
-                            toCol = c;
-                            firstTurnFlag = true;
+                        // Only execute if space is occupied and it is the piece's turn OR it is not the first Turn
+                        if ((model.isOccupied(r, c) && model.pieceAt(r, c).player() == model.currentPlayer()) || !firstTurnFlag) {
 
-                            Move m = new Move(fromRow, fromCol, toRow, toCol);
-//                            toggleSpace(fromRow, fromCol, false);
-                            if ((model.isValidMove(m)) == true) {
+                            if (firstTurnFlag == true) {
+                                fromRow = r;
+                                fromCol = c;
+                                firstTurnFlag = false;
+                                if (model.pieceAt(r, c).player() == model.currentPlayer())
+                                    toggleSpace(fromRow, fromCol, true);
 
-                                //toggleSpace(fromRow, fromCol, false);
-                                model.move(m);
-                                model.setNextPlayer();
+                            } else {
+                                toRow = r;
+                                toCol = c;
+                                firstTurnFlag = true;
+
+                                Move m = new Move(fromRow, fromCol, toRow, toCol);
+                                toggleSpace(fromRow, fromCol, false);
+                                if ((model.isValidMove(m)) == true) {
+
+                                    //toggleSpace(fromRow, fromCol, false);
+                                    model.move(m);
+                                    model.setNextPlayer();
+                                }
+                                lastMove.setText(m.toString()); // FIXME
+                                currentTurn.setText("Turn : " + model.currentPlayer()); // FIXME
+                                displayBoard();
+
                             }
-//                            lastMove.setText(m.toString()); // FIXME
-//                            currentTurn.setText("Turn : " + model.currentPlayer()); // FIXME
-                            displayBoard();
-
                         }
-            if (undo == event.getSource()) {
-
-            }
-            if (newGame == event.getSource()) {
-
-            }
+                    }
         }
     }
 }
