@@ -36,7 +36,8 @@ public class Knight extends ChessPiece {
 	public boolean isValidMove(Move move, IChessPiece[][] board){
 
 		boolean valid = false;
-
+		if(!super.isValidMove(move,board))
+			return false;
 		System.out.println("... moving KNIGHT");
 
 		// MOVING TWO VERTICALLY ONE HORIZONTALLY

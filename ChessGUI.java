@@ -18,8 +18,8 @@ public class ChessGUI {
         ChessPanel panel = new ChessPanel();
         frame.getContentPane().add(panel);
 
-        frame.setResizable(true);
-        frame.setPreferredSize(new Dimension(1000, 800));
+        frame.setResizable(false);
+        frame.setPreferredSize(new Dimension(1000, 650));
         frame.pack();
         frame.setVisible(true);
     }

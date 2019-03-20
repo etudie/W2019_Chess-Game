@@ -20,7 +20,8 @@ public class Rook extends ChessPiece {
 	public boolean isValidMove(Move move, IChessPiece[][] board) {
 		super.isValidMove(move, board);
 		boolean valid = false;
-
+		if(!super.isValidMove(move,board))
+			return false;
 		System.out.print("moving Rook... ");
 		occupiedPlayer = 0;
 

@@ -28,22 +28,69 @@ public class Bishop extends ChessPiece {
 	 *****************************************************************/
 	public boolean isValidMove(Move move, IChessPiece[][] board) {
 		boolean valid = false;
-		System.out.print("... moving BISHOP");
-
-		// XUE: Checks if move is Valid. Uses 8 because that's the longest number of paces.
+		if(!super.isValidMove(move,board))
+			return false;
 		for (int x = 1; x < 8; x++){
-			if (move.fromRow == move.toRow + x || move.fromRow == move.toRow - x)
-				if (move.fromColumn == move.toColumn + x || move.fromColumn == move.toColumn - x) {
-					// if statements can probably be simplified FIXME
-					valid = true;
-					System.out.print("..." + x + " spaces");
+			//if (move.fromRow == move.toRow + x || move.fromRow == move.toRow - x)
+			if (Math.abs(move.fromRow - move.toRow) == x)
+				if (Math.abs(move.fromColumn - move.toColumn) == x) {
+					if (!isOccupied(move, board)) {
+						valid = true;
+						System.out.println("Moving BISHOP");
+					}
 				}
 		}
 
+		if (valid == false)
+			System.out.println("Invalid move for BISHOP");
 
-		if (!valid)
-			System.out.println("...Invalid Move!");
-		System.out.println("...SUCCESS");
 		return valid;
 	}
+
+	private boolean isOccupied(Move move, IChessPiece[][] board) {
+		int row = move.fromRow;
+		int col = move.fromColumn;
+		int origRow = row;
+		int origCol = col;
+
+		if (move.toRow < origRow && move.toColumn < origCol) {
+			while (row-1 > move.toRow && col-1 > move.toColumn) {
+				row--;
+				col--;
+				if (board[row][col] != null)
+					return true;
+			}
+		}
+
+		if (move.toRow < origRow && move.toColumn > origCol) {
+			while (row-1 > move.toRow && col+1 < move.toColumn) {
+				row--;
+				col++;
+				if (board[row][col] != null)
+					return true;
+			}
+		}
+
+		if (move.toRow > origRow && move.toColumn < origCol) {
+			while (row+1 < move.toRow && col-1 > move.toColumn) {
+				row++;
+				col--;
+				if (board[row][col] != null)
+					return true;
+			}
+		}
+
+
+		if (move.toRow > origRow && move.toColumn > origCol) {
+			while (row+1 < move.toRow && col+1 < move.toColumn) {
+				row++;
+				col++;
+				if (board[row][col] != null)
+					return true;
+			}
+		}
+
+		return false;
+	}
+
 }

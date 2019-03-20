@@ -23,7 +23,7 @@ public abstract class ChessPiece implements IChessPiece {
         if (move.toRow == move.fromRow && move.toColumn == move.fromColumn)
             return false;
         if (board[move.toRow][move.toColumn] != null &&
-                !board[move.toRow][move.toColumn].player().equals(player().next()))
+                board[move.toRow][move.toColumn].player().equals(player()))
             return false;
 
 

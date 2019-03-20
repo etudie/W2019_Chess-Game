@@ -13,6 +13,7 @@ import java.awt.event.*;
 import java.net.SocketOption;
 import javax.swing.*;
 import java.awt.BorderLayout;
+import javax.swing.border.EmptyBorder;
 
 public class ChessPanel extends JPanel {
 
@@ -43,6 +44,7 @@ public class ChessPanel extends JPanel {
     private JButton newGame;
     private JLabel lastMove;
     private JLabel currentTurn;
+    private JLabel blank;
     // declare other intance variables as needed
 
     private listener listener;
@@ -60,14 +62,17 @@ public class ChessPanel extends JPanel {
 
         lastMove = new JLabel("Last Move:  none");
         currentTurn = new JLabel("Turn:  White");
+        blank = new JLabel(" ");
 
         // Panels
         JPanel boardpanel = new JPanel();
 
-        JPanel buttonpanel = new JPanel();
-        buttonpanel.setLayout(new BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
-        buttonpanel.add(Box.createRigidArea(new Dimension(30, 40)));
+        JPanel buttonpanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 50));
+       buttonpanel.setLayout(new BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
+        //buttonpanel.add(Box.createRigidArea(new Dimension(30, 40)));
         setLayout(new BorderLayout());
+        lastMove.setBorder(new EmptyBorder(10,0,10,0));
+        currentTurn.setBorder(new EmptyBorder(10,0,10,0));
         newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
         lastMove.setAlignmentX(Component.CENTER_ALIGNMENT);
         undo.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -240,10 +245,12 @@ public class ChessPanel extends JPanel {
         }
 
         repaint();
-        if (model.inCheck(Player.BLACK))
-            JOptionPane.showMessageDialog(null, "Black in Check");
-        if (model.inCheck(Player.WHITE))
-            JOptionPane.showMessageDialog(null, "White in Check");
+        if (model.inCheck(model.currentPlayer()))
+            JOptionPane.showMessageDialog(null, model.currentPlayer()+ " King in Check");
+        //if (model.inCheck(Player.BLACK))
+         //   JOptionPane.showMessageDialog(null, "Black in Check");
+        //if (model.inCheck(Player.WHITE))
+         //   JOptionPane.showMessageDialog(null, "White in Check");
 
     }
 
@@ -252,15 +259,21 @@ public class ChessPanel extends JPanel {
         public void actionPerformed(ActionEvent event) {
             if (newGame == event.getSource()) {
                 model.newGame();
+                currentTurn.setText("Turn: White");
+                lastMove.setText("Last Move: ");
                 displayBoard();
+            }
+            if (undo == event.getSource()) {
+                model.undo();
+                displayBoard();
+                currentTurn.setText("Turn : " + model.currentPlayer());
             }
             for (int r = 0; r < model.numRows(); r++)
                 for (int c = 0; c < model.numColumns(); c++)
                     if (board[r][c] == event.getSource()) {
 
                         // Only execute if space is occupied and it is the piece's turn OR it is not the first Turn
-                        if ((model.isOccupied(r, c) && model.pieceAt(r, c).player() == model.currentPlayer())
-                                || !firstTurnFlag) {
+                        if ((model.isOccupied(r, c) && model.pieceAt(r, c).player() == model.currentPlayer()) || !firstTurnFlag) {
 
                             if (firstTurnFlag == true) {
                                 fromRow = r;
@@ -278,12 +291,15 @@ public class ChessPanel extends JPanel {
                                 toggleSpace(fromRow, fromCol, false);
                                 if ((model.isValidMove(m)) == true) {
 
-                                    //toggleSpace(fromRow, fromCol, false);
+//                                    toggleSpace(fromRow, fromCol, false);
+                                    model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.move(m);
                                     model.setNextPlayer();
                                 }
                                 lastMove.setText(m.toString()); // FIXME
+
                                 currentTurn.setText("Turn : " + model.currentPlayer()); // FIXME
+
                                 displayBoard();
 
                             }

@@ -16,7 +16,8 @@ public class King extends ChessPiece {
 		boolean valid = false;
 
 		System.out.print("...moving KING" +Math.abs(move.fromRow - move.toRow));
-
+		if(!super.isValidMove(move,board))
+			return false;
 
 			// MOVING FORWARD //
 			if (player() == Player.BLACK)
