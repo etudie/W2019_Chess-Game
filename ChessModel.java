@@ -122,12 +122,37 @@ public class ChessModel implements IChessModel {
         toRow = previousRow.get(index);
         toCol = previousColumn.get(index);
 
+        if (fromRow == 8) {
+            if (fromCol == 4) {
+                move(new Move(0,2,0,4));
+                move(new Move(0,3,0,0));
+            }
+            else {
+                move(new Move(0,6,0,4));
+                move(new Move(0,5,0,7));
+            }
+            deleteMove(index);
+        }
+        if (fromRow == 14) {
+            if (fromCol == 4) {
+                move(new Move(7,2,7,4));
+                move(new Move(7,3,7,0));
+            }
+            else {
+                move(new Move(7,6,7,4));
+                move (new Move(7,5,7,7));
+            }
+            deleteMove(index);
+//            setNextPlayer();
+            return;
+        }
+
 
         move(new Move(fromRow, fromCol, toRow, toCol));
         board[fromRow][fromCol] = null;
         setPiece(fromRow, fromCol, null);
 
-        if (board[toRow][toCol].type().equals("Pawn")) {
+        if (board[toRow][toCol] != null && board[toRow][toCol].type().equals("Pawn")) {
             if (toRow == 1)
                 setPiece(toRow, toCol, new Pawn(Player.BLACK, true));
             if (toRow == 6)
@@ -170,7 +195,7 @@ public class ChessModel implements IChessModel {
         previousColumn.add(col);
         newRow.add(nextRow);
         newCol.add(nextCol);
-        if (board[nextRow][nextCol] != null) {
+        if (nextRow < 8 && nextCol < 8 && board[nextRow][nextCol] != null) {
             deletedPiece.add(board[nextRow][nextCol].type());
             capturedPlayer.add(board[nextRow][nextCol].player());
         }
@@ -319,9 +344,9 @@ public class ChessModel implements IChessModel {
                     if (!board[7][7].hasMoved() && !board[7][4].hasMoved()) {
                         if (board[7][5] == null && board[7][6] == null) {
                             if (!canBeAttacked(player, 7, 5) && !canBeAttacked(player, 7, 6)) {
-                                saveMove(7,4,7,6);
+                                saveMove(7,4,14,11);
                                 move(new Move(7,4,7,6));
-                                saveMove(7,7,7,5);
+//                                saveMove(7,7,7,5);
                                 move(new Move(7,7,7,5));
                                 board[7][6].setHasMoved(true);
                                 board[7][5].setHasMoved(true);
