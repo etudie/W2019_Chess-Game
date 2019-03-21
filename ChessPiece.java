@@ -27,12 +27,21 @@ public abstract class ChessPiece implements IChessPiece {
             return false;
         if (move.toRow == move.fromRow && move.toColumn == move.fromColumn)
              return false;
-        if (board[move.toRow][move.toColumn] != null &&
-                board[move.toRow][move.toColumn].player().equals(player().next()))
-            return true;
+        if (player() == Player.WHITE) {
+            if (board[move.toRow][move.toColumn] != null &&
+                    !board[move.toRow][move.toColumn].player().equals(Player.BLACK))
+                return false;
+
+        }
+        if (player() == Player.BLACK) {
+            if (board[move.toRow][move.toColumn] != null &&
+                    !board[move.toRow][move.toColumn].player().equals(Player.WHITE))
+                return false;
+
+        }
 
 
-        return true ;
+        return true;
     }
 
     // return true if boards are different

@@ -39,19 +39,22 @@ public class Bishop extends ChessPiece {
     public boolean isValidMove(Move move, IChessPiece[][] board) {
         boolean valid = false;
 
-        for (int x = 1; x < 8; x++){
-            //if (move.fromRow == move.toRow + x || move.fromRow == move.toRow - x)
-            if (Math.abs(move.fromRow - move.toRow) == x)
-                if (Math.abs(move.fromColumn - move.toColumn) == x) {
-                    if (!isOccupied(move, board)) {
-                        valid = true;
-                        System.out.println("Moving BISHOP");
-                    }
-                }
-        }
+        if (super.isValidMove(move, board)) {
 
-        if (valid == false)
-            System.out.println("Invalid move for BISHOP");
+            for (int x = 1; x < 8; x++) {
+                //if (move.fromRow == move.toRow + x || move.fromRow == move.toRow - x)
+                if (Math.abs(move.fromRow - move.toRow) == x)
+                    if (Math.abs(move.fromColumn - move.toColumn) == x) {
+                        if (!isOccupied(move, board)) {
+                            valid = true;
+                            System.out.println("Moving BISHOP");
+                        }
+                    }
+            }
+
+            if (valid == false)
+                System.out.println("Invalid move for BISHOP");
+        }
 
         return valid;
     }
