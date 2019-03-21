@@ -364,9 +364,9 @@ public class ChessModel implements IChessModel {
                     if (!board[0][7].hasMoved() && !board[0][4].hasMoved()) {
                         if (board[0][5] == null && board[0][6] == null) {
                             if (!canBeAttacked(player, 7, 5) && !canBeAttacked(player, 7, 6)) {
-                                saveMove(0,4,0,6);
+                                saveMove(0,4,8,11);
                                 move(new Move(0,4,0,6));
-                                saveMove(0,7,0,5);
+//                                saveMove(0,7,0,5);
                                 move(new Move(0,7,0,5));
                                 board[0][5].setHasMoved(true);
                                 board[0][6].setHasMoved(true);
@@ -388,9 +388,9 @@ public class ChessModel implements IChessModel {
                         if (board[7][1] == null && board[7][2] == null && board[7][3] == null) {
                             if (!canBeAttacked(player, 7, 1) && !canBeAttacked(player, 7, 2)
                                     && !canBeAttacked(player, 7, 3)) {
-                                saveMove(7,4, 7,2);
+                                saveMove(7,4, 14,4);
                                 move (new Move(7,4,7,2));
-                                saveMove(7,0,7,3);
+//                                saveMove(7,0,7,3);
                                 move(new Move(7,0,7,3));
                                 board[7][3].setHasMoved(true);
                                 board[7][2].setHasMoved(true);
@@ -408,9 +408,9 @@ public class ChessModel implements IChessModel {
                         if (board[0][1] == null && board[0][2] == null && board[0][3] == null) {
                             if (!canBeAttacked(player, 0, 1) && !canBeAttacked(player, 0, 2)
                                     && !canBeAttacked(player, 0, 3)) {
-                                saveMove(0,4, 0,2);
+                                saveMove(0,4, 8,4);
                                 move (new Move(0,4,0,2));
-                                saveMove(0,0,0,3);
+//                                saveMove(0,0,0,3);
                                 move(new Move(0,0,0,3));
                                 board[0][3].setHasMoved(true);
                                 board[0][2].setHasMoved(true);
