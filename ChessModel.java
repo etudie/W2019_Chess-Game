@@ -126,10 +126,14 @@ public class ChessModel implements IChessModel {
             if (fromCol == 4) {
                 move(new Move(0,2,0,4));
                 move(new Move(0,3,0,0));
+                board[0][4].setHasMoved(false);
+                board[0][0].setHasMoved(false);
             }
             else {
                 move(new Move(0,6,0,4));
                 move(new Move(0,5,0,7));
+                board[0][4].setHasMoved(false);
+                board[0][7].setHasMoved(false);
             }
             deleteMove(index);
         }
@@ -137,10 +141,14 @@ public class ChessModel implements IChessModel {
             if (fromCol == 4) {
                 move(new Move(7,2,7,4));
                 move(new Move(7,3,7,0));
+                board[7][4].setHasMoved(false);
+                board[7][0].setHasMoved(false);
             }
             else {
                 move(new Move(7,6,7,4));
                 move (new Move(7,5,7,7));
+                board[7][4].setHasMoved(false);
+                board[7][7].setHasMoved(false);
             }
             deleteMove(index);
 //            setNextPlayer();
