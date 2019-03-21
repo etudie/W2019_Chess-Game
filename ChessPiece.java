@@ -14,6 +14,10 @@ public abstract class ChessPiece implements IChessPiece {
         return owner;
     }
 
+    public abstract boolean hasMoved();
+
+    public abstract void setHasMoved(boolean setMoved);
+
     // verify piece location
     //verify the piece at wanted location doesn't belong to same player
     public boolean isValidMove(Move move, IChessPiece[][] board) {
@@ -24,11 +28,11 @@ public abstract class ChessPiece implements IChessPiece {
         if (move.toRow == move.fromRow && move.toColumn == move.fromColumn)
              return false;
         if (board[move.toRow][move.toColumn] != null &&
-                !board[move.toRow][move.toColumn].player().equals(player().next()))
-            return false;
+                board[move.toRow][move.toColumn].player().equals(player().next()))
+            return true;
 
 
-        return true;
+        return true ;
     }
 
     // return true if boards are different

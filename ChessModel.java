@@ -10,12 +10,18 @@ public class ChessModel implements IChessModel {
     private ArrayList<Player> capturedPlayer;
     private ArrayList<Integer> newRow;
     private ArrayList<Integer> newCol;
+    private BoardState boardState;
 
     // declare other instance variables as needed
 
     public ChessModel() {
         board = new IChessPiece[8][8];
         player = Player.WHITE;
+
+
+        boardState = new BoardState(false, false, false, false,
+                false, false);
+
         deletedPiece = new ArrayList<>();
         previousRow = new ArrayList<>();
         previousColumn = new ArrayList<>();
@@ -97,8 +103,10 @@ public class ChessModel implements IChessModel {
     }
 
     public void undo() {
-        if (previousRow.isEmpty())
+        if (previousRow.isEmpty()) {
+            player = Player.WHITE;
             return;
+        }
         int index = 0;
         int fromRow = 0;
         int fromCol = 0;
@@ -114,12 +122,25 @@ public class ChessModel implements IChessModel {
         toRow = previousRow.get(index);
         toCol = previousColumn.get(index);
 
+
         move(new Move(fromRow, fromCol, toRow, toCol));
         board[fromRow][fromCol] = null;
         setPiece(fromRow, fromCol, null);
-        if (board[toRow][toCol].type().equals("Pawn"))
-            if (toRow == 1 || toRow == 6)
-                setPiece(toRow, toCol, new Pawn(player.next(), true));
+
+        if (board[toRow][toCol].type().equals("Pawn")) {
+            if (toRow == 1)
+                setPiece(toRow, toCol, new Pawn(Player.BLACK, true));
+            if (toRow == 6)
+                setPiece(toRow, toCol, new Pawn(Player.WHITE, true));
+        }
+        if ((toRow == 7 && toCol == 7) || (toRow == 0 && toCol == 7)
+                || (toRow == 0 && toCol == 0) || (toRow == 7 && toCol == 0))
+            if (board[toRow][toCol].type().equals("Rook"))
+                board[toRow][toCol].setHasMoved(false);
+
+        if ((toRow == 0 && toCol == 4) || (toRow == 7 && toCol == 4))
+            if (board[toRow][toCol].type().equals("King"))
+                board[toRow][toCol].setHasMoved(false);
 
         if (deletedPiece.get(index) != null) {
             deleted = deletedPiece.get(index);
@@ -168,6 +189,19 @@ public class ChessModel implements IChessModel {
         capturedPlayer.remove(index);
     }
 
+    private void deleteLastMove() {
+        int index = 0;
+        while (index < previousRow.size()-1 && previousRow.get(index) != null)
+            index++;
+
+        previousRow.remove(index);
+        previousColumn.remove(index);
+        newRow.remove(index);
+        newCol.remove(index);
+        deletedPiece.remove(index);
+        capturedPlayer.remove(index);
+    }
+
     public boolean isComplete() {
         boolean valid = false;
         if (inCheck(currentPlayer())) {
@@ -178,14 +212,66 @@ public class ChessModel implements IChessModel {
     }
 
     public boolean isValidMove(Move move) {
+        boolean valid = false;
+
+     /*IChessPiece fromPiece = board[move.toRow][move.toColumn];
+     IChessPiece toPiece = board[move.toRow][move.toColumn];*/
+
+        Move moveBack = new Move(move.toRow, move.toColumn, move.fromRow, move.fromColumn);
+        //saveMove(move.fromRow, move.fromColumn, move.toRow, move.toColumn);
 
         if (board[move.fromRow][move.fromColumn] != null)
             if ((board[move.fromRow][move.fromColumn].player().equals(currentPlayer()))
-                    && board[move.fromRow][move.fromColumn].isValidMove(move, board))
-                return true;
+                    && board[move.fromRow][move.fromColumn].isValidMove(move, board)){
 
-        return false;
+                if (!inCheck(player)) {
+                    // move the piece
+                    saveMove(move.fromRow, move.fromColumn, move.toRow, move.toColumn);
+                    move(move);
+
+                    if (inCheck(player)){
+                        // the player cannot move into check
+                        valid = false;
+                        boardState.setMovingIntoCheck(true);
+
+                        // move piece back
+                        move(moveBack);
+                        deleteLastMove();
+
+                    }
+                    else {
+                        valid = true;
+                        boardState.setMovingIntoCheck(false);
+                    }
+                }
+                else {
+                    // if the player is in check, they must move out of check
+                    boardState.setInCheck(true); // FIXME should this go in the inCheck method instead?
+
+                    saveMove(move.fromRow, move.fromColumn, move.toRow, move.toColumn);
+                    move(move);
+
+                    if (inCheck(player) == true){
+                        // still in check; can't move there
+
+                        // move piece back
+                        move(moveBack);
+                        deleteLastMove();
+
+                        valid = false;
+                    }
+                    else {
+                        valid = true;
+                    }
+                }
+            }
+/*    if (valid == true)
+        saveMove(move.fromRow, move.fromColumn, move.toRow, move.toColumn);*/
+
+
+        return valid;
     }
+
 
     public void move(Move move) {
         board[move.toRow][move.toColumn] =  board[move.fromRow][move.fromColumn];
@@ -216,12 +302,119 @@ public class ChessModel implements IChessModel {
                     if (!board[r][c].player().equals(p)) {
                         fromRow = r;
                         fromColumn = c;
-                        if (board[r][c].isValidMove(new Move (fromRow, fromColumn, toRow, toColumn), board))
+                        if (board[r][c].isValidMove(new Move (fromRow, fromColumn, toRow, toColumn), board)) {
                             valid = true;
+                        }
                     }
             }
 
         return valid;
+    }
+
+
+    public void castleKingSide() {
+        if (player.equals(Player.WHITE)) {
+            if (board[7][7] != null && board[7][4] != null) {
+                if (board[7][7].type().equals("Rook") && board[7][4].type().equals("King")) {
+                    if (!board[7][7].hasMoved() && !board[7][4].hasMoved()) {
+                        if (board[7][5] == null && board[7][6] == null) {
+                            if (!canBeAttacked(player, 7, 5) && !canBeAttacked(player, 7, 6)) {
+                                saveMove(7,4,7,6);
+                                move(new Move(7,4,7,6));
+                                saveMove(7,7,7,5);
+                                move(new Move(7,7,7,5));
+                                board[7][6].setHasMoved(true);
+                                board[7][5].setHasMoved(true);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        if (player.equals(Player.BLACK)) {
+            if (board[0][7] != null && board[0][4] != null) {
+                if (board[0][7].type().equals("Rook") && board[0][4].type().equals("King")) {
+                    if (!board[0][7].hasMoved() && !board[0][4].hasMoved()) {
+                        if (board[0][5] == null && board[0][6] == null) {
+                            if (!canBeAttacked(player, 7, 5) && !canBeAttacked(player, 7, 6)) {
+                                saveMove(0,4,0,6);
+                                move(new Move(0,4,0,6));
+                                saveMove(0,7,0,5);
+                                move(new Move(0,7,0,5));
+                                board[0][5].setHasMoved(true);
+                                board[0][6].setHasMoved(true);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void castleQueenSide() {
+        if (player.equals(Player.WHITE)) {
+            if (board[7][0] != null && board[7][4] != null) {
+                if (board[7][0].type().equals("Rook") && board[7][4].type().equals("King")) {
+                    if (!board[7][0].hasMoved() && !board[7][4].hasMoved()) {
+                        if (board[7][1] == null && board[7][2] == null && board[7][3] == null) {
+                            if (!canBeAttacked(player, 7, 1) && !canBeAttacked(player, 7, 2)
+                                    && !canBeAttacked(player, 7, 3)) {
+                                saveMove(7,4, 7,2);
+                                move (new Move(7,4,7,2));
+                                saveMove(7,0,7,3);
+                                move(new Move(7,0,7,3));
+                                board[7][3].setHasMoved(true);
+                                board[7][2].setHasMoved(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (player.equals(Player.BLACK)) {
+            if (board[0][0] != null && board[0][4] != null) {
+                if (board[0][0].type().equals("Rook") && board[0][4].type().equals("King")) {
+                    if (!board[0][0].hasMoved() && !board[0][4].hasMoved()) {
+                        if (board[0][1] == null && board[0][2] == null && board[0][3] == null) {
+                            if (!canBeAttacked(player, 0, 1) && !canBeAttacked(player, 0, 2)
+                                    && !canBeAttacked(player, 0, 3)) {
+                                saveMove(0,4, 0,2);
+                                move (new Move(0,4,0,2));
+                                saveMove(0,0,0,3);
+                                move(new Move(0,0,0,3));
+                                board[0][3].setHasMoved(true);
+                                board[0][2].setHasMoved(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private boolean canBeAttacked(Player p, int row, int col) {
+        int fromRow = 0;
+        int fromColumn = 0;
+        boolean dangerous = false;
+
+        for (int r = 0; r < numRows(); r++)
+            for (int c = 0; c < numColumns(); c++) {
+                if (board[r][c] != null)
+                    if (board[r][c].player().equals(player.next())) {
+                        fromRow = r;
+                        fromColumn = c;
+                        if (board[r][c].isValidMove(new Move (fromRow, fromColumn, row, col), board))
+                            dangerous = true;
+                    }
+            }
+
+        return dangerous;
     }
 
     public Player currentPlayer() {

@@ -1,6 +1,7 @@
 package Project3;
 
 public class Bishop extends ChessPiece {
+    public boolean moved;
 
     /*****************************************************************
      * Constructor for the bishop piece
@@ -19,6 +20,15 @@ public class Bishop extends ChessPiece {
     public String type() {
         return "Bishop";
     }
+
+    public boolean hasMoved() {
+        return false;
+    }
+
+    public void setHasMoved(boolean setMoved) {
+        moved = setMoved;
+    }
+
 
     /*****************************************************************
      * Determining valid moves for the selected bishop piece

@@ -40,6 +40,8 @@ public class ChessPanel extends JPanel {
 
     private JButton undo;
     private JButton newGame;
+    private JButton castleLeft;
+    private JButton castleRight;
     private JLabel lastMove;
     private JLabel currentTurn;
     // declare other intance variables as needed
@@ -54,10 +56,17 @@ public class ChessPanel extends JPanel {
         // Buttons and JLabels
         undo = new JButton("Undo");
         undo.addActionListener(listener);
+
         newGame = new JButton("New Game");
         newGame.addActionListener(listener);
 
-        lastMove = new JLabel("Last Move:  none");
+        castleLeft = new JButton("Castle Left");
+        castleLeft.addActionListener(listener);
+
+        castleRight = new JButton("Castle Right");
+        castleRight.addActionListener(listener);
+
+//        lastMove = new JLabel("Last Move:  none");
         currentTurn = new JLabel("Turn:  White");
 
         // Panels
@@ -68,13 +77,19 @@ public class ChessPanel extends JPanel {
         buttonpanel.add(Box.createRigidArea(new Dimension(30,40)));
 
         buttonpanel.add(newGame);
-        buttonpanel.add(lastMove);
+//        buttonpanel.add(lastMove);
         buttonpanel.add(undo);
+        buttonpanel.add(castleLeft);
+        buttonpanel.add(castleRight);
+
         buttonpanel.add(currentTurn);
+
         newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lastMove.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        lastMove.setAlignmentX(Component.CENTER_ALIGNMENT);
         undo.setAlignmentX(Component.CENTER_ALIGNMENT);
         currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        castleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
+        castleRight.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
         boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns()));
@@ -95,7 +110,7 @@ public class ChessPanel extends JPanel {
                 boardpanel.add(board[r][c]);
             }
         }
-        boardpanel.setPreferredSize(new Dimension(600, 550));
+        boardpanel.setPreferredSize(new Dimension(700, 600));
 
         setLayout(new BorderLayout());
         add(boardpanel, BorderLayout.CENTER);
@@ -250,7 +265,7 @@ public class ChessPanel extends JPanel {
             if (newGame == event.getSource()) {
                 model.newGame();
                 currentTurn.setText("Turn: White");
-                lastMove.setText("Last Move: ");
+//                lastMove.setText("Last Move: ");
                 displayBoard();
             }
             if (undo == event.getSource()) {
@@ -258,6 +273,15 @@ public class ChessPanel extends JPanel {
                 displayBoard();
                 currentTurn.setText("Turn : " + model.currentPlayer());
             }
+            if (castleRight == event.getSource()) {
+                model.castleKingSide();
+                displayBoard();
+            }
+            if (castleLeft == event.getSource()) {
+                model.castleQueenSide();
+                displayBoard();
+            }
+
             for (int r = 0; r < model.numRows(); r++)
                 for (int c = 0; c < model.numColumns(); c++)
                     if (board[r][c] == event.getSource()) {
@@ -272,7 +296,8 @@ public class ChessPanel extends JPanel {
                                 if (model.pieceAt(r, c).player() == model.currentPlayer())
                                     toggleSpace(fromRow, fromCol, true);
 
-                            } else {
+                            }
+                            else {
                                 toRow = r;
                                 toCol = c;
                                 firstTurnFlag = true;
@@ -282,11 +307,12 @@ public class ChessPanel extends JPanel {
                                 if ((model.isValidMove(m)) == true) {
 
 //                                    toggleSpace(fromRow, fromCol, false);
-                                    model.saveMove(fromRow, fromCol, toRow, toCol);
-                                    model.move(m);
+//                                    model.saveMove(fromRow, fromCol, toRow, toCol);
+//                                    model.move(m);
                                     model.setNextPlayer();
+
                                 }
-                                lastMove.setText(m.toString()); // FIXME
+//                                lastMove.setText(m.toString()); // FIXME
                                 currentTurn.setText("Turn : " + model.currentPlayer()); // FIXME
                                 displayBoard();
 

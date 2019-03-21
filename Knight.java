@@ -6,6 +6,7 @@ package Project3;
  * @version Winter 2019
  *****************************************************************/
 public class Knight extends ChessPiece {
+    public boolean moved;
 
     // AMELA: I'll make the comments better later
 
@@ -27,6 +28,15 @@ public class Knight extends ChessPiece {
         return "Knight";
     }
 
+    public boolean hasMoved() {
+        return false;
+    }
+
+    public void setHasMoved(boolean setMoved) {
+        moved = setMoved;
+    }
+
+
     /*****************************************************************
      * Determining valid moves for the selected knight piece
      * @param move the move
@@ -36,7 +46,8 @@ public class Knight extends ChessPiece {
     public boolean isValidMove(Move move, IChessPiece[][] board){
 
         boolean valid = false;
-
+        if(!super.isValidMove(move,board))
+            return false;
         System.out.println("... moving KNIGHT");
 
         // MOVING TWO VERTICALLY ONE HORIZONTALLY

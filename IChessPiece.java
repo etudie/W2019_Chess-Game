@@ -33,4 +33,8 @@ public interface IChessPiece {
      * @throws IllegalArgumentException  if {@code this} object isn't the piece at location {@code [move.fromRow, move.fromColumn]}.
      */
     boolean isValidMove(Move move, IChessPiece[][] board);
+
+    boolean hasMoved();
+
+    void setHasMoved(boolean setMoved);
 }

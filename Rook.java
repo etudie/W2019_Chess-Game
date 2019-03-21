@@ -3,10 +3,12 @@ package Project3;
 public class Rook extends ChessPiece {
 
     private int occupiedPlayer;
+    public boolean moved;
 
     public Rook(Player player) {
 
         super(player);
+        moved = false;
 
     }
 
@@ -16,32 +18,40 @@ public class Rook extends ChessPiece {
 
     }
 
+    public boolean hasMoved() {
+        return moved;
+    }
+
+    public void setHasMoved(boolean setMoved) {
+        moved = setMoved;
+    }
+
     // determines if the move is valid for a rook piece
     public boolean isValidMove(Move move, IChessPiece[][] board) {
         boolean valid = false;
 
-        System.out.print("moving Rook... ");
-        occupiedPlayer = 0;
+        if (super.isValidMove(move, board)) {
 
-        if (Math.abs(move.toRow-move.fromRow) > 0 && move.toColumn - move.fromColumn == 0
-        && (!isOccupied(move, board) || occupiedPlayer == 1)) {
-            valid = true;
-            System.out.println("Successful ");
-        }
-        else if (Math.abs(move.toColumn - move.fromColumn) > 0 && move.toRow - move.fromRow == 0
-        && (!isOccupied(move, board) || occupiedPlayer == 1)) {
-            valid = true;
-            System.out.println("Successful ");
-        }
+            occupiedPlayer = 0;
 
-        if (!valid)
-            System.out.println("Failure");
+            if (Math.abs(move.toRow - move.fromRow) > 0 && move.toColumn - move.fromColumn == 0
+                    && (!isOccupied(move, board) || occupiedPlayer == 1)) {
+                valid = true;
+                moved = true;
+            }
+            if (Math.abs(move.toColumn - move.fromColumn) > 0 && move.toRow - move.fromRow == 0
+                    && (!isOccupied(move, board) || occupiedPlayer == 1)) {
+                valid = true;
+                moved = true;
+            }
+
+        }
 
         return valid;
 
     }
 
-    public boolean isOccupied(Move move, IChessPiece[][] board) {
+    private boolean isOccupied(Move move, IChessPiece[][] board) {
         boolean occupied = false;
         int occupation = 0;
 
