@@ -307,8 +307,8 @@ public class ChessPanel extends JPanel {
                                 if ((model.isValidMove(m)) == true) {
 
 //                                    toggleSpace(fromRow, fromCol, false);
-//                                    model.saveMove(fromRow, fromCol, toRow, toCol);
-//                                    model.move(m);
+                                    model.saveMove(fromRow, fromCol, toRow, toCol);
+                                    model.move(m);
                                     model.setNextPlayer();
 
                                 }
