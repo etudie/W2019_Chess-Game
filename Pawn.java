@@ -84,11 +84,11 @@ public class Pawn extends ChessPiece {
             }
             if (player().equals(Player.WHITE)) {
                 if (move.fromRow == 3 && board[move.fromRow][move.fromColumn] != null) {
-                    if (move.fromColumn + 1 < 8 && move.toColumn == move.fromColumn + 1) {
+                    if (move.toRow == 2 && move.fromColumn + 1 < 8 && move.toColumn == move.fromColumn + 1) {
                         if (board[3][move.toColumn] != null && board[3][move.toColumn].hasMoved())
                             valid = true;
                     }
-                    if (move.fromColumn - 1 >= 0 && move.toColumn == move.fromColumn - 1) {
+                    if (move.toRow == 2 && move.fromColumn - 1 >= 0 && move.toColumn == move.fromColumn - 1) {
                         if (board[3][move.toColumn] != null && board[3][move.toColumn].hasMoved())
                             valid = true;
                     }
@@ -96,11 +96,11 @@ public class Pawn extends ChessPiece {
             }
             if (player().equals(Player.BLACK)) {
                 if (move.fromRow == 4 && board[move.fromRow][move.fromColumn] != null) {
-                    if (move.fromColumn + 1 < 8 && move.toColumn == move.fromColumn + 1) {
+                    if (move.toRow == 5 && move.fromColumn + 1 < 8 && move.toColumn == move.fromColumn + 1) {
                         if (board[4][move.toColumn] != null && board[4][move.toColumn].hasMoved())
                             valid = true;
                     }
-                    if (move.fromColumn - 1 >= 0 && move.toColumn == move.fromColumn - 1) {
+                    if (move.toRow == 5 && move.fromColumn - 1 >= 0 && move.toColumn == move.fromColumn - 1) {
                         if (board[4][move.toColumn] != null && board[4][move.toColumn].hasMoved())
                             valid = true;
                     }
@@ -112,12 +112,15 @@ public class Pawn extends ChessPiece {
                 valid = true;
             if (!valid)
                 System.out.println("...invalid move!");
-            else if (ifPromote(move)) {
+
+        }
+
+        if (valid)
+            if (ifPromote(move)) {
                 toPromote(move, board);
                 /*board[move.toRow][move.toColumn] = new Rook(player());
                 board[move.fromRow][move.fromColumn] = null;*/
             }
-        }
 
         return valid;
     }

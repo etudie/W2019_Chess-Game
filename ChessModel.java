@@ -104,6 +104,15 @@ public class ChessModel implements IChessModel {
         setPiece(0, 6, new Knight (Player.BLACK));
         setPiece(0, 7, new Rook (Player.BLACK));
 
+        deletedPiece = new ArrayList<>();
+        previousRow = new ArrayList<>();
+        previousColumn = new ArrayList<>();
+        capturedPlayer = new ArrayList<>();
+        newRow = new ArrayList<>();
+        newCol = new ArrayList<>();
+        capturedRow = new ArrayList<>();
+        capturedCol = new ArrayList<>();
+
     }
 
     public void undo() {
@@ -194,15 +203,6 @@ public class ChessModel implements IChessModel {
             board[0][0].setHasMoved(false);
         }
 
-//        if ((toRow == 7 && toCol == 7) || (toRow == 0 && toCol == 7)
-//                || (toRow == 0 && toCol == 0) || (toRow == 7 && toCol == 0))
-//            if (board[toRow][toCol].type().equals("Rook"))
-//                board[toRow][toCol].setHasMoved(false);
-//
-//        if ((toRow == 0 && toCol == 4) || (toRow == 7 && toCol == 4))
-//            if (board[toRow][toCol].type().equals("King"))
-//                board[toRow][toCol].setHasMoved(false);
-
         if (deletedPiece.get(index) != null) {
             deleted = deletedPiece.get(index);
             if (deleted.equals("King"))
@@ -217,6 +217,8 @@ public class ChessModel implements IChessModel {
                 if (captiveRow == 6 || captiveRow == 1)
                     setPiece(captiveRow, captiveCol, new Pawn(capturedPlayer.get(index), true));
                 setPiece(captiveRow, captiveCol, new Pawn(capturedPlayer.get(index), false));
+                if (captiveRow == 3 || captiveRow == 4)
+                    board[captiveRow][captiveCol].setHasMoved(true);
             }
             if (deleted.equals("Bishop"))
                 setPiece(captiveRow, captiveCol, new Bishop(capturedPlayer.get(index)));
@@ -286,6 +288,8 @@ public class ChessModel implements IChessModel {
                 if (captiveRow == 6 || captiveRow == 1)
                     setPiece(captiveRow, captiveCol, new Pawn(capturedPlayer.get(index), true));
                 setPiece(captiveRow, captiveCol, new Pawn(capturedPlayer.get(index), false));
+                if (captiveRow == 3 || captiveRow == 4)
+                    board[captiveRow][captiveCol].setHasMoved(true);
             }
             if (deleted.equals("Bishop"))
                 setPiece(captiveRow, captiveCol, new Bishop(capturedPlayer.get(index)));
