@@ -661,62 +661,93 @@ public class ChessModel implements IChessModel {
          *		i. check to see if that piece is in danger of being removed, if so, move a different piece.
          */
 
-        Move attemptMove;
-        int whiteRow;
-        int whiteColumn;
-        int blackRow;
-        int blackColumn;
-
-        for (int r = 0; r < numRows(); r++)
-            for (int c = 0; c < numColumns(); c++){
-
-                if (pieceAt(r, c).player().equals(Player.WHITE)) {
-                    whiteRow = r;
-                    whiteColumn = c;
-
-                    for (int i = 0; i < numRows(); i++)
-                        for (int j = 0; j < numColumns(); j++){
-
-                            if (pieceAt(r, c).player().equals(Player.BLACK)){
-                                blackRow = r;
-                                blackColumn = c;
-
-                                attemptMove = new Move(whiteRow, whiteColumn, blackRow, blackColumn);
-
-                                if (player == Player.BLACK && inCheck(player)){
-                                    getOutOfCheck();
-                                }
-                                else if (isValidMove(attemptMove))
-                                    getOutOfDanger();
-                                else {
-
-                                    // try to put white in check or Move a piece (pawns first) forward toward opponent king
-                                    //		 *		i. check to see if that piece is in danger of being removed, if so, move a different piece.
-
-                                }
-
-                            }
-
-                        }
-                }
-
-            }
+        if (inCheck(Player.BLACK))
+            getOutOfCheck();
+        else
+            if (attemptToTakeAPiece() == false)
+                if (attemptToRemoveDanger() == false)
+                    if (attemptCheckmate() == false)
+                        findAPlaceToMove();
 
     }
 
     public void getOutOfCheck(){
 
+        for (int r = 0; r < numRows(); r++)
+            for (int c = 0; c < numColumns(); c++){
+
+
+
+            }
+
     }
 
-    public void putOpponentInCheck(){
+    public boolean attemptToTakeAPiece(){
+        boolean valid = false;
 
+        return valid;
     }
 
-    public void getOutOfDanger(){
+    public boolean attemptToRemoveDanger(){
+        Move attemptMove;
+        boolean valid = false;
 
+        for (int r = 0; r < numRows(); r++)
+            for (int c = 0; c < numColumns(); c++){
+
+                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)){
+                    if (inDanger(r, c)){
+
+                        for (int i = 0; i < numRows(); i++)
+                            for (int j = 0; j < numColumns(); j++){
+
+                                attemptMove = new Move(r, c, i, j);
+
+                                if (isValidMove(attemptMove) && !inDanger(i, j)){
+                                    move(attemptMove);
+                                }
+
+                            }
+
+                    }
+                }
+
+            }
+
+        return valid;
     }
 
-    public void findAPlaceToMove(){
+    private boolean inDanger(int row, int col) {
+        boolean valid = false;
+        Move attemptMove;
 
+         int blackRow = row;
+         int blackCol = col;
+
+         for (int r = 0; r < numRows(); r++)
+             for (int c = 0; c < numColumns(); c++){
+
+                 if (board[r][c] != null && board[r][c].player().equals(Player.WHITE)){
+
+                     attemptMove = new Move (r, c, blackRow, blackCol);
+                     if (isValidMove(attemptMove))
+                         valid = true;
+
+                 }
+             }
+
+         return valid;
+    }
+
+    public boolean attemptCheckmate(){
+        boolean valid = false;
+
+        return valid;
+    }
+
+    public boolean findAPlaceToMove(){
+        boolean valid = false;
+
+        return valid;
     }
 }
