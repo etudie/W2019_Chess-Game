@@ -257,6 +257,8 @@ public class ChessPanel extends JPanel {
         }
         if (model.inCheck(model.currentPlayer()))
             JOptionPane.showMessageDialog(null, "King in Check");
+        if (model.isComplete())
+            JOptionPane.showMessageDialog(null, "Checkmate");
     }
 
     // inner class that represents action listener for buttons
@@ -309,6 +311,7 @@ public class ChessPanel extends JPanel {
 //                                    toggleSpace(fromRow, fromCol, false);
                                     model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.move(m);
+                                    model.setPassantable();
                                     model.setNextPlayer();
 
                                 }

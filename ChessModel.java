@@ -237,6 +237,9 @@ public class ChessModel implements IChessModel {
             capturedRow.add(nextRow);
             capturedCol.add(nextCol);
         }
+        if (capturedRow.size() == previousRow.size()) {
+            return;
+        }
         else {
             deletedPiece.add(null);
             capturedPlayer.add(null);
@@ -399,6 +402,52 @@ public class ChessModel implements IChessModel {
         if (valid) {
             move(moveBack);
             deleteLastMove();
+            if (player.equals(Player.WHITE)) {
+                if (move.fromRow == 3 && board[move.fromRow][move.fromColumn] != null
+                    && board[move.fromRow][move.fromColumn].type().equals("Pawn")) {
+                    if (move.fromColumn + 1 < 8 && move.toColumn == move.fromColumn + 1) {
+                        if (board[3][move.toColumn] != null && board[3][move.toColumn].hasMoved()) {
+                            capturedRow.add(3);
+                            capturedCol.add(move.toColumn);
+                            capturedPlayer.add(Player.BLACK);
+                            deletedPiece.add("Pawn");
+                            board[3][move.toColumn] = null;
+                        }
+                    }
+                    if (move.fromColumn - 1 >= 0 && move.toColumn == move.fromColumn - 1) {
+                        if (board[3][move.toColumn] != null && board[3][move.toColumn].hasMoved()) {
+                            capturedRow.add(3);
+                            capturedCol.add(move.toColumn);
+                            capturedPlayer.add(Player.BLACK);
+                            deletedPiece.add("Pawn");
+                            board[3][move.toColumn] = null;
+                        }
+                    }
+                }
+            }
+            if (player.equals(Player.BLACK)) {
+                if (move.fromRow == 4 && board[move.fromRow][move.fromColumn] != null &&
+                        board[move.fromRow][move.fromColumn].type().equals("Pawn")) {
+                    if (move.fromColumn + 1 < 8 && move.toColumn == move.fromColumn + 1) {
+                        if (board[4][move.toColumn] != null && board[4][move.toColumn].hasMoved()) {
+                            capturedRow.add(4);
+                            capturedCol.add(move.toColumn);
+                            capturedPlayer.add(Player.WHITE);
+                            deletedPiece.add("Pawn");
+                            board[4][move.toColumn] = null;
+                        }
+                    }
+                    if (move.fromColumn - 1 >= 0 && move.toColumn == move.fromColumn - 1) {
+                        if (board[4][move.toColumn] != null && board[4][move.toColumn].hasMoved()) {
+                            capturedRow.add(4);
+                            capturedCol.add(move.toColumn);
+                            capturedPlayer.add(Player.WHITE);
+                            deletedPiece.add("Pawn");
+                            board[4][move.toColumn] = null;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -449,10 +498,10 @@ public class ChessModel implements IChessModel {
         int col = 0;
         while(col < 8) {
             if (board[3][col] != null && board[3][col].type().equals("Pawn")
-                    && board[3][col].hasMoved())
+                    && board[3][col].hasMoved() && newCol.get(newCol.size()-1) != col)
                 board[3][col].setHasMoved(false);
-            if (board[4][col] != null && board[3][col].type().equals("Pawn")
-                    && board[4][col].hasMoved())
+            if (board[4][col] != null && board[4][col].type().equals("Pawn")
+                    && board[4][col].hasMoved() && newCol.get(newCol.size()-1) != col)
                 board[4][col].setHasMoved(false);
 
             col++;
@@ -611,6 +660,63 @@ public class ChessModel implements IChessModel {
          *d. Move a piece (pawns first) forward toward opponent king
          *		i. check to see if that piece is in danger of being removed, if so, move a different piece.
          */
+
+        Move attemptMove;
+        int whiteRow;
+        int whiteColumn;
+        int blackRow;
+        int blackColumn;
+
+        for (int r = 0; r < numRows(); r++)
+            for (int c = 0; c < numColumns(); c++){
+
+                if (pieceAt(r, c).player().equals(Player.WHITE)) {
+                    whiteRow = r;
+                    whiteColumn = c;
+
+                    for (int i = 0; i < numRows(); i++)
+                        for (int j = 0; j < numColumns(); j++){
+
+                            if (pieceAt(r, c).player().equals(Player.BLACK)){
+                                blackRow = r;
+                                blackColumn = c;
+
+                                attemptMove = new Move(whiteRow, whiteColumn, blackRow, blackColumn);
+
+                                if (player == Player.BLACK && inCheck(player)){
+                                    getOutOfCheck();
+                                }
+                                else if (isValidMove(attemptMove))
+                                    getOutOfDanger();
+                                else {
+
+                                    // try to put white in check or Move a piece (pawns first) forward toward opponent king
+                                    //		 *		i. check to see if that piece is in danger of being removed, if so, move a different piece.
+
+                                }
+
+                            }
+
+                        }
+                }
+
+            }
+
+    }
+
+    public void getOutOfCheck(){
+
+    }
+
+    public void putOpponentInCheck(){
+
+    }
+
+    public void getOutOfDanger(){
+
+    }
+
+    public void findAPlaceToMove(){
 
     }
 }
