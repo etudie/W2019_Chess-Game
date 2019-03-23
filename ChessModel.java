@@ -638,7 +638,7 @@ public class ChessModel implements IChessModel {
         for (int r = 0; r < numRows(); r++)
             for (int c = 0; c < numColumns(); c++) {
                 if (board[r][c] != null)
-                    if (board[r][c].player().equals(player.next())) {
+                    if (!board[r][c].player().equals(p)) {
                         fromRow = r;
                         fromColumn = c;
                         if (board[r][c].isValidMove(new Move(fromRow, fromColumn, row, col), board))
@@ -710,6 +710,7 @@ public class ChessModel implements IChessModel {
         int blackRow;
         int blackCol;
         Move attemptMove;
+        Move moveBack;
 
         if (canMovePawn())
             return;
@@ -728,9 +729,16 @@ public class ChessModel implements IChessModel {
                         for (int j = 0; j < numColumns(); j++) {
 
                             attemptMove = new Move(blackRow, blackCol, i, j);
+                            moveBack = new Move(i, j, blackRow, blackCol);
                             if (isValidMove(attemptMove)) {
+                                saveMove(r,c,i,j);
                                 move(attemptMove);
-                                return;
+                                if (!canBeAttacked(Player.BLACK, i, j))
+                                    return;
+                                else {
+                                    move(moveBack);
+                                    deleteLastMove();
+                                }
                             }
                         }
                     }
@@ -742,6 +750,7 @@ public class ChessModel implements IChessModel {
 
     private boolean canMovePawn() {
         Move attemptMove;
+        Move moveBack;
         int fromRow = 0;
         int fromCol = 0;
         int toRow = 0;
@@ -759,16 +768,37 @@ public class ChessModel implements IChessModel {
                             if (board[i][j] == null)
                                 if (i+1 < numRows()) {
                                     attemptMove = new Move(fromRow, fromCol, i+1, j);
-                                    if (isValidMove(attemptMove)) {
+                                    moveBack = new Move(i+1, j, fromRow, fromCol);
+                                    if (isValidMove(attemptMove) && !canBeAttacked(Player.BLACK, i+1, j)) {
+                                        saveMove(r,c,i+1,j);
                                         move(attemptMove);
                                         return true;
                                     }
                                     else {
                                         attemptMove = new Move(fromRow, fromCol, i, j);
+                                        moveBack = new Move(i, j, fromRow, fromCol);
                                         if (isValidMove(attemptMove)) {
+                                            saveMove(r,c,i,j);
                                             move(attemptMove);
-                                            return true;
+                                            if (!canBeAttacked(Player.BLACK, i, j))
+                                                return true;
+                                            else {
+                                                move(moveBack);
+                                                deleteLastMove();
+                                            }
                                         }
+                                    }
+
+                                }
+                                else {
+                                    attemptMove = new Move(fromRow, fromCol, i, j);
+                                    moveBack = new Move(i, j, fromRow, fromCol);
+                                    if (isValidMove(attemptMove)) {
+                                        move(attemptMove);
+                                        if (!canBeAttacked(Player.BLACK, i, j))
+                                            return true;
+                                        else
+                                            move(moveBack);
                                     }
                                 }
                         }
@@ -803,6 +833,7 @@ public class ChessModel implements IChessModel {
 
                             // the only valid move is moving out of check
                             if (isValidMove(attemptMove)) {
+                                saveMove(r,c,i,j);
                                 move(attemptMove);
                                 return;
                             }
@@ -814,7 +845,7 @@ public class ChessModel implements IChessModel {
 
     }
 
-    public boolean attemptCheckmate() {
+    private boolean attemptCheckmate() {
         // FIXME i'm not too confident about this one
 
         boolean valid = false;
@@ -848,19 +879,24 @@ public class ChessModel implements IChessModel {
                     blackRow = r;
                     blackCol = c;
 
-                    for (int i = 0; i < numRows(); i++)
-                        for (int j = 0; j < numColumns(); j++) {
+                    for (int i = whiteKingRow-1; i < whiteKingRow+1; i++)
+                        for (int j = whiteKingCol-1; j < whiteKingCol+1; j++) {
 
-                            attemptMove = new Move(blackRow, blackCol, i, j);
-                            moveBack = new Move(i, j, blackRow, blackCol);
+                            if (i >= 0 && j >= 0 && i < numRows() && j < numColumns()) {
+                                attemptMove = new Move(blackRow, blackCol, i, j);
+                                moveBack = new Move(i, j, blackRow, blackCol);
 
-                            if (isValidMove(attemptMove)) {
-                                move(attemptMove);
+                                if (isValidMove(attemptMove) && !canBeAttacked(Player.BLACK, i, j)) {
+                                    saveMove(r,c,i,j);
+                                    move(attemptMove);
 
-                                if (inCheck(Player.WHITE) && !canBeAttacked(Player.BLACK, i, j))
-                                    return true;
-                                else
-                                    move(moveBack);
+                                    if (inCheck(Player.WHITE))
+                                        return true;
+                                    else {
+                                        move(moveBack);
+                                        deleteLastMove();
+                                    }
+                                }
                             }
 
                         }
@@ -895,6 +931,7 @@ public class ChessModel implements IChessModel {
                                 // if black can take white, take white
                                 attemptMove = new Move(blackRow, blackCol, i, j);
                                 if (isValidMove(attemptMove)) {
+                                    saveMove(r,c,i,j);
                                     move(attemptMove);
                                     return true;
                                 }
@@ -907,12 +944,8 @@ public class ChessModel implements IChessModel {
     }
 
     private boolean attemptToRemoveDanger() {
-        boolean valid = false;
 
-        int whiteRow;
-        int whiteCol;
         Move attemptMove;
-        Move moveBack;
 
         for (int r = 0; r < numRows(); r++) {
             for (int c  = 0; c < numColumns(); c++) {
@@ -921,14 +954,10 @@ public class ChessModel implements IChessModel {
                         for (int i = 0; i < numRows(); i++) {
                             for (int j = 0; j < numColumns(); j++) {
                                 attemptMove = new Move(r,c,i,j);
-                                moveBack = new Move(i,j,r,c);
-                                if (isValidMove(attemptMove)) {
+                                if (isValidMove(attemptMove) && !canBeAttacked(Player.BLACK, i, j)) {
+                                    saveMove(r,c,i,j);
                                     move(attemptMove);
-                                    if (canBeAttacked(Player.BLACK, i, j)) {
-                                        move(moveBack);
-                                    }
-                                    else
-                                        return true;
+                                    return true;
                                 }
                             }
                         }
@@ -936,67 +965,6 @@ public class ChessModel implements IChessModel {
             }
         }
 
-        // look for a white piece
-//        for (int r = 0; r < numRows(); r++)
-//            for (int c = 0; c < numColumns(); c++) {
-//
-//                if (board[r][c] != null && board[r][c].player().equals(Player.WHITE)) {
-//
-//                    whiteRow = r;
-//                    whiteCol = c;
-//
-//                    // look for a black piece
-//                    for (int i = 0; i < numRows(); i++)
-//                        for (int j = 0; j < numColumns(); j++) {
-//
-//                            if (board[i][j] != null && board[i][j].player().equals(Player.BLACK)) {
-//
-//                                // if white can take black, move black
-//                                attemptMove = new Move(whiteRow, whiteCol, i, j);
-//                                if (isValidMove(attemptMove)) {
-//                                    valid = true; // FIXME not sure if this should be here
-//                                    findAPlaceToMove();
-//                                }
-//                            }
-//                        }
-//                }
-//            }
-
         return false;
-
-        /*   FIRST ATTEMPT
-     Move attemptMove;
-        boolean valid = false;
-        for (int r = 0; r < numRows(); r++)
-            for (int c = 0; c < numColumns(); c++){
-                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)){
-                    if (inDanger(r, c)){
-                        for (int i = 0; i < numRows(); i++)
-                            for (int j = 0; j < numColumns(); j++){
-                                attemptMove = new Move(r, c, i, j);
-                                if (isValidMove(attemptMove) && !inDanger(i, j)){
-                                    move(attemptMove);
-                                }
-                            }
-                    }
-                }
-            }
-        return valid;*/
     }
-
-    /*private boolean inDanger(int row, int col) {
-        boolean valid = false;
-        Move attemptMove;
-         int blackRow = row;
-         int blackCol = col;
-         for (int r = 0; r < numRows(); r++)
-             for (int c = 0; c < numColumns(); c++){
-                 if (board[r][c] != null && board[r][c].player().equals(Player.WHITE)){
-                     attemptMove = new Move (r, c, blackRow, blackCol);
-                     if (isValidMove(attemptMove))
-                         valid = true;
-                 }
-             }
-         return valid;
-    }*/
 }
