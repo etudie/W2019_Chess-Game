@@ -1,4 +1,5 @@
 package Project3;
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class ChessModel implements IChessModel {
@@ -39,7 +40,7 @@ public class ChessModel implements IChessModel {
         board[7][3] = new Queen(Player.WHITE);
         board[7][4] = new King(Player.WHITE);
         board[7][5] = new Bishop(Player.WHITE);
-        board[7][6] = new Knight (Player.WHITE);
+        board[7][6] = new Knight(Player.WHITE);
         board[7][7] = new Rook(Player.WHITE);
         board[6][0] = new Pawn(Player.WHITE, true);
         board[6][1] = new Pawn(Player.WHITE, true);
@@ -56,7 +57,7 @@ public class ChessModel implements IChessModel {
         board[0][3] = new Queen(Player.BLACK);
         board[0][4] = new King(Player.BLACK);
         board[0][5] = new Bishop(Player.BLACK);
-        board[0][6] = new Knight (Player.BLACK);
+        board[0][6] = new Knight(Player.BLACK);
         board[0][7] = new Rook(Player.BLACK);
         board[1][0] = new Pawn(Player.BLACK, true);
         board[1][1] = new Pawn(Player.BLACK, true);
@@ -68,20 +69,20 @@ public class ChessModel implements IChessModel {
         board[1][7] = new Pawn(Player.BLACK, true);
     }
 
-    public void newGame(){
+    public void newGame() {
 
         System.out.println("NEW GAME");
         player = Player.WHITE;
         for (int r = 0; r < 8; r++) {
-            if(r == 1)
+            if (r == 1)
                 for (int c = 0; c < 8; c++) {
                     setPiece(r, c, new Pawn(Player.BLACK, true));
                 }
-            if(r == 6)
+            if (r == 6)
                 for (int c = 0; c < 8; c++) {
                     setPiece(r, c, new Pawn(Player.WHITE, true));
                 }
-            if(r < 6 && r >1)
+            if (r < 6 && r > 1)
                 for (int c = 0; c < 8; c++) {
                     setPiece(r, c, null);
                 }
@@ -92,8 +93,8 @@ public class ChessModel implements IChessModel {
         setPiece(7, 3, new Queen(Player.WHITE));
         setPiece(7, 4, new King(Player.WHITE));
         setPiece(7, 5, new Bishop(Player.WHITE));
-        setPiece(7, 6, new Knight (Player.WHITE));
-        setPiece(7, 7, new Rook (Player.WHITE));
+        setPiece(7, 6, new Knight(Player.WHITE));
+        setPiece(7, 7, new Rook(Player.WHITE));
 
         setPiece(0, 0, new Rook(Player.BLACK));
         setPiece(0, 1, new Knight(Player.BLACK));
@@ -101,8 +102,8 @@ public class ChessModel implements IChessModel {
         setPiece(0, 3, new Queen(Player.BLACK));
         setPiece(0, 4, new King(Player.BLACK));
         setPiece(0, 5, new Bishop(Player.BLACK));
-        setPiece(0, 6, new Knight (Player.BLACK));
-        setPiece(0, 7, new Rook (Player.BLACK));
+        setPiece(0, 6, new Knight(Player.BLACK));
+        setPiece(0, 7, new Rook(Player.BLACK));
 
         deletedPiece = new ArrayList<>();
         previousRow = new ArrayList<>();
@@ -112,6 +113,41 @@ public class ChessModel implements IChessModel {
         newCol = new ArrayList<>();
         capturedRow = new ArrayList<>();
         capturedCol = new ArrayList<>();
+
+    }
+
+    public boolean ifPromote() {
+        int r;
+        if (currentPlayer() == Player.WHITE)
+            r = 0;
+        else
+            r = 7;
+        for (int c = 0; c < numColumns(); c++) {
+            if (board[r][c] != null && board[r][c].type().equals("Pawn")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void toPromote(/*int fromRow, int fromCol, */int toRow, int toCol) {
+        String[] choices = { "Queen", "Bishop", "Knight", "Rook"};
+        String command = (String) JOptionPane.showInputDialog(null, "Choose now...",
+                "Promoting the Pawn", JOptionPane.QUESTION_MESSAGE, null,
+                choices, // Array of choices
+                choices[0]); // Initial choice
+        if(command.equalsIgnoreCase(choices[0])){
+            setPiece(toRow, toCol, new Queen(currentPlayer()));
+        }
+        else if(command.equalsIgnoreCase(choices[1])){
+            setPiece(toRow, toCol, new Bishop(currentPlayer()));
+        }
+        else if(command.equalsIgnoreCase(choices[2])){
+            setPiece(toRow, toCol, new Knight(currentPlayer()));
+        }
+        else if(command.equalsIgnoreCase(choices[3])){
+            setPiece(toRow, toCol, new Rook(currentPlayer()));
+        }
 
     }
 
@@ -136,7 +172,7 @@ public class ChessModel implements IChessModel {
         int captiveCol = 0;
         String deleted = "";
 
-        while (index < previousRow.size()-1 && previousRow.get(index) != null)
+        while (index < previousRow.size() - 1 && previousRow.get(index) != null)
             index++;
 
         fromRow = newRow.get(index);
@@ -150,14 +186,13 @@ public class ChessModel implements IChessModel {
 
         if (fromRow == 8) {
             if (fromCol == 4) {
-                move(new Move(0,2,0,4));
-                move(new Move(0,3,0,0));
+                move(new Move(0, 2, 0, 4));
+                move(new Move(0, 3, 0, 0));
                 board[0][4].setHasMoved(false);
                 board[0][0].setHasMoved(false);
-            }
-            else {
-                move(new Move(0,6,0,4));
-                move(new Move(0,5,0,7));
+            } else {
+                move(new Move(0, 6, 0, 4));
+                move(new Move(0, 5, 0, 7));
                 board[0][4].setHasMoved(false);
                 board[0][7].setHasMoved(false);
             }
@@ -166,14 +201,13 @@ public class ChessModel implements IChessModel {
         }
         if (fromRow == 14) {
             if (fromCol == 4) {
-                move(new Move(7,2,7,4));
-                move(new Move(7,3,7,0));
+                move(new Move(7, 2, 7, 4));
+                move(new Move(7, 3, 7, 0));
                 board[7][4].setHasMoved(false);
                 board[7][0].setHasMoved(false);
-            }
-            else {
-                move(new Move(7,6,7,4));
-                move (new Move(7,5,7,7));
+            } else {
+                move(new Move(7, 6, 7, 4));
+                move(new Move(7, 5, 7, 7));
                 board[7][4].setHasMoved(false);
                 board[7][7].setHasMoved(false);
             }
@@ -188,9 +222,9 @@ public class ChessModel implements IChessModel {
         setPiece(fromRow, fromCol, null);
 
         if (board[toRow][toCol] != null && board[toRow][toCol].type().equals("Pawn")) {
-            if (toRow == 1)
+            if (toRow == 1 && board[toRow][toCol].player().equals(Player.BLACK))
                 setPiece(toRow, toCol, new Pawn(Player.BLACK, true));
-            if (toRow == 6)
+            if (toRow == 6 && board[toRow][toCol].player().equals(Player.WHITE))
                 setPiece(toRow, toCol, new Pawn(Player.WHITE, true));
         }
 
@@ -241,8 +275,7 @@ public class ChessModel implements IChessModel {
         }
         if (capturedRow.size() == previousRow.size()) {
             return;
-        }
-        else {
+        } else {
             deletedPiece.add(null);
             capturedPlayer.add(null);
             capturedRow.add(null);
@@ -266,7 +299,7 @@ public class ChessModel implements IChessModel {
         int captiveRow = 0;
         int captiveCol = 0;
         String deleted = "";
-        while (index < previousRow.size()-1 && previousRow.get(index) != null)
+        while (index < previousRow.size() - 1 && previousRow.get(index) != null)
             index++;
 
         if (capturedRow.get(index) != null) {
@@ -318,20 +351,20 @@ public class ChessModel implements IChessModel {
         Move attemptMove;
 
         // first, is the player in check?
-        if (inCheck(player)){
+        if (inCheck(player)) {
 
             for (int r = 0; r < numRows(); r++)
-                for (int c = 0; c < numColumns(); c++){
+                for (int c = 0; c < numColumns(); c++) {
 
                     // find a piece of the same color
-                    if (board[r][c] != null && board[r][c].player().equals(player)){
+                    if (board[r][c] != null && board[r][c].player().equals(player)) {
 
                         fromRow = r;
                         fromColumn = c;
 
                         // look for way to get out of check
                         for (int i = 0; i < numRows(); i++)
-                            for (int j = 0; j < numColumns(); j++){
+                            for (int j = 0; j < numColumns(); j++) {
 
                                 attemptMove = new Move(fromRow, fromColumn, i, j);
                                 if (isValidMove(attemptMove))
@@ -339,8 +372,7 @@ public class ChessModel implements IChessModel {
                             }
                     }
                 }
-        }
-        else
+        } else
             valid = false; // if they aren't in check, it can't be a checkmate
 
         if (valid)
@@ -356,16 +388,17 @@ public class ChessModel implements IChessModel {
 
         Move moveBack = new Move(move.toRow, move.toColumn, move.fromRow, move.fromColumn);
 
-        if (board[move.fromRow][move.fromColumn] != null)
+        if (board[move.fromRow][move.fromColumn] != null) {
             if ((board[move.fromRow][move.fromColumn].player().equals(currentPlayer()))
-                    && board[move.fromRow][move.fromColumn].isValidMove(move, board)){
+                    && board[move.fromRow][move.fromColumn].isValidMove(move, board)) {
 
                 if (!inCheck(player)) {
                     // move the piece
                     saveMove(move.fromRow, move.fromColumn, move.toRow, move.toColumn);
+
                     move(move);
 
-                    if (inCheck(player)){
+                    if (inCheck(player)) {
                         // the player cannot move into check
                         valid = false;
                         boardState.setMovingIntoCheck(true);
@@ -374,20 +407,18 @@ public class ChessModel implements IChessModel {
                         move(moveBack);
                         deleteLastMove();
 
-                    }
-                    else {
+                    } else {
                         valid = true;
                         boardState.setMovingIntoCheck(false);
                     }
-                }
-                else {
+                } else {
                     // if the player is in check, they must move out of check
                     boardState.setInCheck(true); // FIXME should this go in the inCheck method instead?
 
                     saveMove(move.fromRow, move.fromColumn, move.toRow, move.toColumn);
                     move(move);
 
-                    if (inCheck(player) == true){
+                    if (inCheck(player) == true) {
                         // still in check; can't move there
 
                         // move piece back
@@ -395,20 +426,21 @@ public class ChessModel implements IChessModel {
                         deleteLastMove();
 
                         valid = false;
-                    }
-                    else {
+                    } else {
                         valid = true;
                     }
                 }
             }
+        }
 /*    if (valid == true)
         saveMove(move.fromRow, move.fromColumn, move.toRow, move.toColumn);*/
         if (valid) {
             move(moveBack);
             deleteLastMove();
+
             if (player.equals(Player.WHITE)) {
                 if (move.fromRow == 3 && board[move.fromRow][move.fromColumn] != null
-                    && board[move.fromRow][move.fromColumn].type().equals("Pawn")) {
+                        && board[move.fromRow][move.fromColumn].type().equals("Pawn")) {
                     if (move.fromColumn + 1 < 8 && move.toColumn == move.fromColumn + 1) {
                         if (board[3][move.toColumn] != null && board[3][move.toColumn].hasMoved()) {
                             capturedRow.add(3);
@@ -460,7 +492,7 @@ public class ChessModel implements IChessModel {
 
 
     public void move(Move move) {
-        board[move.toRow][move.toColumn] =  board[move.fromRow][move.fromColumn];
+        board[move.toRow][move.toColumn] = board[move.fromRow][move.fromColumn];
         board[move.fromRow][move.fromColumn] = null;
     }
 
@@ -488,7 +520,7 @@ public class ChessModel implements IChessModel {
                     if (!board[r][c].player().equals(p)) {
                         fromRow = r;
                         fromColumn = c;
-                        if (board[r][c].isValidMove(new Move (fromRow, fromColumn, toRow, toColumn), board)) {
+                        if (board[r][c].isValidMove(new Move(fromRow, fromColumn, toRow, toColumn), board)) {
                             valid = true;
                         }
                     }
@@ -500,12 +532,12 @@ public class ChessModel implements IChessModel {
 
     public void setPassantable() {
         int col = 0;
-        while(col < 8) {
+        while (col < 8) {
             if (board[3][col] != null && board[3][col].type().equals("Pawn")
-                    && board[3][col].hasMoved() && newCol.get(newCol.size()-1) != col)
+                    && board[3][col].hasMoved() && newCol.get(newCol.size() - 1) != col)
                 board[3][col].setHasMoved(false);
             if (board[4][col] != null && board[4][col].type().equals("Pawn")
-                    && board[4][col].hasMoved() && newCol.get(newCol.size()-1) != col)
+                    && board[4][col].hasMoved() && newCol.get(newCol.size() - 1) != col)
                 board[4][col].setHasMoved(false);
 
             col++;
@@ -519,10 +551,10 @@ public class ChessModel implements IChessModel {
                     if (!board[7][7].hasMoved() && !board[7][4].hasMoved()) {
                         if (board[7][5] == null && board[7][6] == null) {
                             if (!canBeAttacked(player, 7, 5) && !canBeAttacked(player, 7, 6)) {
-                                saveMove(7,4,14,11);
-                                move(new Move(7,4,7,6));
+                                saveMove(7, 4, 14, 11);
+                                move(new Move(7, 4, 7, 6));
 //                                saveMove(7,7,7,5);
-                                move(new Move(7,7,7,5));
+                                move(new Move(7, 7, 7, 5));
                                 board[7][6].setHasMoved(true);
                                 board[7][5].setHasMoved(true);
                             }
@@ -539,10 +571,10 @@ public class ChessModel implements IChessModel {
                     if (!board[0][7].hasMoved() && !board[0][4].hasMoved()) {
                         if (board[0][5] == null && board[0][6] == null) {
                             if (!canBeAttacked(player, 7, 5) && !canBeAttacked(player, 7, 6)) {
-                                saveMove(0,4,8,11);
-                                move(new Move(0,4,0,6));
+                                saveMove(0, 4, 8, 11);
+                                move(new Move(0, 4, 0, 6));
 //                                saveMove(0,7,0,5);
-                                move(new Move(0,7,0,5));
+                                move(new Move(0, 7, 0, 5));
                                 board[0][5].setHasMoved(true);
                                 board[0][6].setHasMoved(true);
                             }
@@ -563,10 +595,10 @@ public class ChessModel implements IChessModel {
                         if (board[7][1] == null && board[7][2] == null && board[7][3] == null) {
                             if (!canBeAttacked(player, 7, 1) && !canBeAttacked(player, 7, 2)
                                     && !canBeAttacked(player, 7, 3)) {
-                                saveMove(7,4, 14,4);
-                                move (new Move(7,4,7,2));
+                                saveMove(7, 4, 14, 4);
+                                move(new Move(7, 4, 7, 2));
 //                                saveMove(7,0,7,3);
-                                move(new Move(7,0,7,3));
+                                move(new Move(7, 0, 7, 3));
                                 board[7][3].setHasMoved(true);
                                 board[7][2].setHasMoved(true);
                             }
@@ -583,10 +615,10 @@ public class ChessModel implements IChessModel {
                         if (board[0][1] == null && board[0][2] == null && board[0][3] == null) {
                             if (!canBeAttacked(player, 0, 1) && !canBeAttacked(player, 0, 2)
                                     && !canBeAttacked(player, 0, 3)) {
-                                saveMove(0,4, 8,4);
-                                move (new Move(0,4,0,2));
+                                saveMove(0, 4, 8, 4);
+                                move(new Move(0, 4, 0, 2));
 //                                saveMove(0,0,0,3);
-                                move(new Move(0,0,0,3));
+                                move(new Move(0, 0, 0, 3));
                                 board[0][3].setHasMoved(true);
                                 board[0][2].setHasMoved(true);
                             }
@@ -609,7 +641,7 @@ public class ChessModel implements IChessModel {
                     if (board[r][c].player().equals(player.next())) {
                         fromRow = r;
                         fromColumn = c;
-                        if (board[r][c].isValidMove(new Move (fromRow, fromColumn, row, col), board))
+                        if (board[r][c].isValidMove(new Move(fromRow, fromColumn, row, col), board))
                             dangerous = true;
                     }
             }
@@ -667,91 +699,304 @@ public class ChessModel implements IChessModel {
 
         if (inCheck(Player.BLACK))
             getOutOfCheck();
-        else
-            if (attemptToTakeAPiece() == false)
-                if (attemptToRemoveDanger() == false)
-                    if (attemptCheckmate() == false)
-                        findAPlaceToMove();
+        else if (attemptToTakeAPiece() == false)
+            if (attemptToRemoveDanger() == false)
+                if (attemptCheckmate() == false)
+                    findAPlaceToMove();
 
     }
 
-    public void getOutOfCheck(){
-
-        for (int r = 0; r < numRows(); r++)
-            for (int c = 0; c < numColumns(); c++){
-
-
-
-            }
-
-    }
-
-    public boolean attemptToTakeAPiece(){
-        boolean valid = false;
-
-        return valid;
-    }
-
-    public boolean attemptToRemoveDanger(){
+    private void findAPlaceToMove() {
+        int blackRow;
+        int blackCol;
         Move attemptMove;
-        boolean valid = false;
+
+        if (canMovePawn())
+            return;
+
+        for (int r = 0; r < numRows(); r++) {
+            for (int c = 0; c < numColumns(); c++) {
+
+                // look for a black piece
+                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)) {
+
+                    blackRow = r;
+                    blackCol = c;
+
+                    // find a valid spot for black piece to move
+                    for (int i = 0; i < numRows(); i++) {
+                        for (int j = 0; j < numColumns(); j++) {
+
+                            attemptMove = new Move(blackRow, blackCol, i, j);
+                            if (isValidMove(attemptMove)) {
+                                move(attemptMove);
+                                return;
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    private boolean canMovePawn() {
+        Move attemptMove;
+        int fromRow = 0;
+        int fromCol = 0;
+        int toRow = 0;
+        int toCol = 0;
+
+        for (int r = 0; r < numRows(); r++) {
+            for (int c = 0; c < numColumns(); c++) {
+                if (board[r][c] != null && board[r][c].type().equals("Pawn")
+                        && board[r][c].player().equals(Player.BLACK)) {
+                    fromRow = r;
+                    fromCol = c;
+
+                    for (int i = 0; i < numRows(); i++) {
+                        for (int j = 0; j < numColumns(); j++) {
+                            if (board[i][j] == null)
+                                if (i+1 < numRows()) {
+                                    attemptMove = new Move(fromRow, fromCol, i+1, j);
+                                    if (isValidMove(attemptMove)) {
+                                        move(attemptMove);
+                                        return true;
+                                    }
+                                    else {
+                                        attemptMove = new Move(fromRow, fromCol, i, j);
+                                        if (isValidMove(attemptMove)) {
+                                            move(attemptMove);
+                                            return true;
+                                        }
+                                    }
+                                }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public void getOutOfCheck() {
+        //FIXME this method is pretty similar to findAPlaceToMove
+
+        Move attemptMove;
+        int blackRow;
+        int blackCol;
 
         for (int r = 0; r < numRows(); r++)
-            for (int c = 0; c < numColumns(); c++){
+            for (int c = 0; c < numColumns(); c++) {
 
-                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)){
-                    if (inDanger(r, c)){
+                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)) {
 
-                        for (int i = 0; i < numRows(); i++)
-                            for (int j = 0; j < numColumns(); j++){
+                    blackRow = r;
+                    blackCol = c;
 
-                                attemptMove = new Move(r, c, i, j);
+                    for (int i = 0; i < numRows(); i++)
+                        for (int j = 0; j < numColumns(); j++) {
 
-                                if (isValidMove(attemptMove) && !inDanger(i, j)){
-                                    move(attemptMove);
-                                }
+                            attemptMove = new Move(blackRow, blackCol, i, j);
 
+                            // the only valid move is moving out of check
+                            if (isValidMove(attemptMove)) {
+                                move(attemptMove);
+                                return;
                             }
+                        }
 
-                    }
                 }
 
             }
 
+    }
+
+    public boolean attemptCheckmate() {
+        // FIXME i'm not too confident about this one
+
+        boolean valid = false;
+
+        int whiteKingRow = 0;
+        int whiteKingCol = 0;
+        int blackRow;
+        int blackCol;
+
+        Move attemptMove;
+        Move moveBack;
+
+        // locate white king
+        for (int r = 0; r < numRows(); r++)
+            for (int c = 0; c < numColumns(); c++) {
+
+                if (board[r][c] != null &&
+                        board[r][c].player().equals(Player.WHITE))
+                    if (board[r][c].type().equals("King")) {
+
+                        whiteKingRow = r;
+                        whiteKingCol = c;
+
+                    }
+            }
+
+        for (int r = 0; r < numRows(); r++)
+            for (int c = 0; c < numColumns(); c++) {
+
+                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)) {
+                    blackRow = r;
+                    blackCol = c;
+
+                    for (int i = 0; i < numRows(); i++)
+                        for (int j = 0; j < numColumns(); j++) {
+
+                            attemptMove = new Move(blackRow, blackCol, i, j);
+                            moveBack = new Move(i, j, blackRow, blackCol);
+
+                            if (isValidMove(attemptMove)) {
+                                move(attemptMove);
+
+                                if (inCheck(Player.WHITE) && !canBeAttacked(Player.BLACK, i, j))
+                                    return true;
+                                else
+                                    move(moveBack);
+                            }
+
+                        }
+                }
+            }
+
         return valid;
     }
 
-    private boolean inDanger(int row, int col) {
+    private boolean attemptToTakeAPiece() {
         boolean valid = false;
+
+        int blackRow;
+        int blackCol;
         Move attemptMove;
 
+        // find a black piece
+        for (int r = 0; r < numRows(); r++)
+            for (int c = 0; c < numColumns(); c++) {
+
+                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)) {
+
+                    blackRow = r;
+                    blackCol = c;
+
+                    // find a white piece
+                    for (int i = 0; i < numRows(); i++)
+                        for (int j = 0; j < numColumns(); j++) {
+
+                            if (board[i][j] != null && board[i][j].player().equals(Player.WHITE)) {
+
+                                // if black can take white, take white
+                                attemptMove = new Move(blackRow, blackCol, i, j);
+                                if (isValidMove(attemptMove)) {
+                                    move(attemptMove);
+                                    return true;
+                                }
+                            }
+                        }
+                }
+            }
+
+        return valid;
+    }
+
+    private boolean attemptToRemoveDanger() {
+        boolean valid = false;
+
+        int whiteRow;
+        int whiteCol;
+        Move attemptMove;
+        Move moveBack;
+
+        for (int r = 0; r < numRows(); r++) {
+            for (int c  = 0; c < numColumns(); c++) {
+                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK))
+                    if (canBeAttacked(Player.BLACK, r, c)) {
+                        for (int i = 0; i < numRows(); i++) {
+                            for (int j = 0; j < numColumns(); j++) {
+                                attemptMove = new Move(r,c,i,j);
+                                moveBack = new Move(i,j,r,c);
+                                if (isValidMove(attemptMove)) {
+                                    move(attemptMove);
+                                    if (canBeAttacked(Player.BLACK, i, j)) {
+                                        move(moveBack);
+                                    }
+                                    else
+                                        return true;
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+
+        // look for a white piece
+//        for (int r = 0; r < numRows(); r++)
+//            for (int c = 0; c < numColumns(); c++) {
+//
+//                if (board[r][c] != null && board[r][c].player().equals(Player.WHITE)) {
+//
+//                    whiteRow = r;
+//                    whiteCol = c;
+//
+//                    // look for a black piece
+//                    for (int i = 0; i < numRows(); i++)
+//                        for (int j = 0; j < numColumns(); j++) {
+//
+//                            if (board[i][j] != null && board[i][j].player().equals(Player.BLACK)) {
+//
+//                                // if white can take black, move black
+//                                attemptMove = new Move(whiteRow, whiteCol, i, j);
+//                                if (isValidMove(attemptMove)) {
+//                                    valid = true; // FIXME not sure if this should be here
+//                                    findAPlaceToMove();
+//                                }
+//                            }
+//                        }
+//                }
+//            }
+
+        return false;
+
+        /*   FIRST ATTEMPT
+     Move attemptMove;
+        boolean valid = false;
+        for (int r = 0; r < numRows(); r++)
+            for (int c = 0; c < numColumns(); c++){
+                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)){
+                    if (inDanger(r, c)){
+                        for (int i = 0; i < numRows(); i++)
+                            for (int j = 0; j < numColumns(); j++){
+                                attemptMove = new Move(r, c, i, j);
+                                if (isValidMove(attemptMove) && !inDanger(i, j)){
+                                    move(attemptMove);
+                                }
+                            }
+                    }
+                }
+            }
+        return valid;*/
+    }
+
+    /*private boolean inDanger(int row, int col) {
+        boolean valid = false;
+        Move attemptMove;
          int blackRow = row;
          int blackCol = col;
-
          for (int r = 0; r < numRows(); r++)
              for (int c = 0; c < numColumns(); c++){
-
                  if (board[r][c] != null && board[r][c].player().equals(Player.WHITE)){
-
                      attemptMove = new Move (r, c, blackRow, blackCol);
                      if (isValidMove(attemptMove))
                          valid = true;
-
                  }
              }
-
          return valid;
-    }
-
-    public boolean attemptCheckmate(){
-        boolean valid = false;
-
-        return valid;
-    }
-
-    public boolean findAPlaceToMove(){
-        boolean valid = false;
-
-        return valid;
-    }
+    }*/
 }

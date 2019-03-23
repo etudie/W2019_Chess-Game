@@ -44,6 +44,7 @@ public class ChessPanel extends JPanel {
     private JButton castleRight;
     private JLabel lastMove;
     private JLabel currentTurn;
+    private JButton temp;
     // declare other intance variables as needed
 
     private listener listener;
@@ -69,6 +70,9 @@ public class ChessPanel extends JPanel {
 //        lastMove = new JLabel("Last Move:  none");
         currentTurn = new JLabel("Turn:  White");
 
+        temp = new JButton("AI");
+        temp.addActionListener(listener);
+
         // Panels
         JPanel boardpanel = new JPanel();
 
@@ -81,6 +85,7 @@ public class ChessPanel extends JPanel {
         buttonpanel.add(undo);
         buttonpanel.add(castleLeft);
         buttonpanel.add(castleRight);
+        buttonpanel.add(temp);
 
         buttonpanel.add(currentTurn);
 
@@ -90,6 +95,7 @@ public class ChessPanel extends JPanel {
         currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
         castleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
         castleRight.setAlignmentX(Component.CENTER_ALIGNMENT);
+        temp.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
         boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns()));
@@ -283,6 +289,11 @@ public class ChessPanel extends JPanel {
                 model.castleQueenSide();
                 displayBoard();
             }
+            if (temp == event.getSource()) {
+                model.AI();
+                displayBoard();
+                model.setNextPlayer();
+            }
 
             for (int r = 0; r < model.numRows(); r++)
                 for (int c = 0; c < model.numColumns(); c++)
@@ -312,6 +323,8 @@ public class ChessPanel extends JPanel {
                                     model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.move(m);
                                     model.setPassantable();
+                                    if (model.ifPromote())
+                                        model.toPromote(toRow, toCol);
                                     model.setNextPlayer();
 
                                 }
