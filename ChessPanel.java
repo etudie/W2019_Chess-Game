@@ -282,17 +282,24 @@ public class ChessPanel extends JPanel {
                 currentTurn.setText("Turn : " + model.currentPlayer());
             }
             if (castleRight == event.getSource()) {
-                model.castleKingSide();
-                displayBoard();
+                if (model.castleKingSide()) {
+                    displayBoard();
+                    model.setNextPlayer();
+                    currentTurn.setText("Turn : " + model.currentPlayer());
+                }
             }
             if (castleLeft == event.getSource()) {
-                model.castleQueenSide();
-                displayBoard();
+                if (model.castleQueenSide()) {
+                    displayBoard();
+                    model.setNextPlayer();
+                    currentTurn.setText("Turn : " + model.currentPlayer());
+                }
             }
             if (temp == event.getSource()) {
                 model.AI();
                 displayBoard();
-                model.setNextPlayer();
+                if (!model.isComplete())
+                    model.setNextPlayer();
             }
 
             for (int r = 0; r < model.numRows(); r++)
@@ -326,6 +333,9 @@ public class ChessPanel extends JPanel {
                                     if (model.ifPromote())
                                         model.toPromote(toRow, toCol);
                                     model.setNextPlayer();
+//                                    model.AI();
+//                                    displayBoard();
+//                                    model.setNextPlayer();
 
                                 }
 //                                lastMove.setText(m.toString()); // FIXME

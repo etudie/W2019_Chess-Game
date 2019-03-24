@@ -13,6 +13,7 @@ public class ChessModel implements IChessModel {
     private ArrayList<Integer> newCol;
     private ArrayList<Integer> capturedRow;
     private ArrayList<Integer> capturedCol;
+    private ArrayList<Boolean> promoted;
     private BoardState boardState;
 
     // declare other instance variables as needed
@@ -33,6 +34,7 @@ public class ChessModel implements IChessModel {
         newCol = new ArrayList<>();
         capturedRow = new ArrayList<>();
         capturedCol = new ArrayList<>();
+        promoted = new ArrayList<>();
 
         board[7][0] = new Rook(Player.WHITE);
         board[7][1] = new Knight(Player.WHITE);
@@ -182,6 +184,20 @@ public class ChessModel implements IChessModel {
         if (capturedRow.get(index) != null) {
             captiveRow = capturedRow.get(index);
             captiveCol = capturedCol.get(index);
+            deleted = deletedPiece.get(index);
+        }
+
+        if (promoted.get(index) && player.equals(Player.BLACK)) {
+            if (capturedRow.get(index) != null)
+                setPiece(captiveRow, captiveCol,new Pawn(Player.WHITE, false));
+            else
+                setPiece(fromRow,fromCol,new Pawn(Player.WHITE, false));
+        }
+        if (promoted.get(index) && player.equals(Player.WHITE)) {
+            if (capturedRow.get(index) != null)
+                setPiece(captiveRow, captiveCol,new Pawn(Player.BLACK, false));
+            else
+                setPiece(fromRow,fromCol,new Pawn(Player.BLACK, false));
         }
 
         if (fromRow == 8) {
@@ -238,7 +254,6 @@ public class ChessModel implements IChessModel {
         }
 
         if (deletedPiece.get(index) != null) {
-            deleted = deletedPiece.get(index);
             if (deleted.equals("King"))
                 setPiece(captiveRow, captiveCol, new King(capturedPlayer.get(index)));
             if (deleted.equals("Queen"))
@@ -267,6 +282,8 @@ public class ChessModel implements IChessModel {
         previousColumn.add(col);
         newRow.add(nextRow);
         newCol.add(nextCol);
+        if (promoted.size() == previousRow.size()-1)
+            promoted.add(false);
         if (nextRow < 8 && nextCol < 8 && board[nextRow][nextCol] != null) {
             deletedPiece.add(board[nextRow][nextCol].type());
             capturedPlayer.add(board[nextRow][nextCol].player());
@@ -292,6 +309,7 @@ public class ChessModel implements IChessModel {
         capturedPlayer.remove(index);
         capturedRow.remove(index);
         capturedCol.remove(index);
+        promoted.remove(index);
     }
 
     private void deleteLastMove() {
@@ -307,6 +325,9 @@ public class ChessModel implements IChessModel {
             captiveCol = capturedCol.get(index);
         }
 
+        if (promoted.get(index) != true) {
+            promoted.remove(index);
+        }
         if (deletedPiece.get(index) != null) {
             deleted = deletedPiece.get(index);
             if (deleted.equals("King"))
@@ -394,8 +415,11 @@ public class ChessModel implements IChessModel {
 
                 if (!inCheck(player)) {
                     // move the piece
+                    if ((move.toRow == 0 || move.toRow == 7)
+                            && board[move.fromRow][move.fromColumn].type().equals("Pawn")) {
+                        promoted.add(true);
+                    }
                     saveMove(move.fromRow, move.fromColumn, move.toRow, move.toColumn);
-
                     move(move);
 
                     if (inCheck(player)) {
@@ -544,7 +568,7 @@ public class ChessModel implements IChessModel {
         }
     }
 
-    public void castleKingSide() {
+    public boolean castleKingSide() {
         if (player.equals(Player.WHITE)) {
             if (board[7][7] != null && board[7][4] != null) {
                 if (board[7][7].type().equals("Rook") && board[7][4].type().equals("King")) {
@@ -557,6 +581,7 @@ public class ChessModel implements IChessModel {
                                 move(new Move(7, 7, 7, 5));
                                 board[7][6].setHasMoved(true);
                                 board[7][5].setHasMoved(true);
+                                return true;
                             }
 
                         }
@@ -577,6 +602,7 @@ public class ChessModel implements IChessModel {
                                 move(new Move(0, 7, 0, 5));
                                 board[0][5].setHasMoved(true);
                                 board[0][6].setHasMoved(true);
+                                return true;
                             }
 
                         }
@@ -584,10 +610,10 @@ public class ChessModel implements IChessModel {
                 }
             }
         }
-
+        return false;
     }
 
-    public void castleQueenSide() {
+    public boolean castleQueenSide() {
         if (player.equals(Player.WHITE)) {
             if (board[7][0] != null && board[7][4] != null) {
                 if (board[7][0].type().equals("Rook") && board[7][4].type().equals("King")) {
@@ -601,6 +627,7 @@ public class ChessModel implements IChessModel {
                                 move(new Move(7, 0, 7, 3));
                                 board[7][3].setHasMoved(true);
                                 board[7][2].setHasMoved(true);
+                                return true;
                             }
                         }
                     }
@@ -621,6 +648,7 @@ public class ChessModel implements IChessModel {
                                 move(new Move(0, 0, 0, 3));
                                 board[0][3].setHasMoved(true);
                                 board[0][2].setHasMoved(true);
+                                return true;
                             }
                         }
                     }
@@ -628,6 +656,7 @@ public class ChessModel implements IChessModel {
             }
         }
 
+        return false;
     }
 
     private boolean canBeAttacked(Player p, int row, int col) {
