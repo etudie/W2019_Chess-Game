@@ -1,4 +1,4 @@
-package chess;
+package Project3;
 /*	ChessPanel.java
 This class is responsible for
 1. presenting the GUI
@@ -10,10 +10,8 @@ This class is responsible for
 
 import java.awt.*;
 import java.awt.event.*;
-import java.net.SocketOption;
 import javax.swing.*;
 import java.awt.BorderLayout;
-import javax.swing.border.EmptyBorder;
 
 public class ChessPanel extends JPanel {
 
@@ -42,9 +40,11 @@ public class ChessPanel extends JPanel {
 
     private JButton undo;
     private JButton newGame;
+    private JButton castleLeft;
+    private JButton castleRight;
     private JLabel lastMove;
     private JLabel currentTurn;
-    private JLabel blank;
+    private JButton temp;
     // declare other intance variables as needed
 
     private listener listener;
@@ -57,33 +57,48 @@ public class ChessPanel extends JPanel {
         // Buttons and JLabels
         undo = new JButton("Undo");
         undo.addActionListener(listener);
+
         newGame = new JButton("New Game");
         newGame.addActionListener(listener);
 
-        lastMove = new JLabel("Last Move:  none");
+        castleLeft = new JButton("Castle Left");
+        castleLeft.addActionListener(listener);
+
+        castleRight = new JButton("Castle Right");
+        castleRight.addActionListener(listener);
+
+//        lastMove = new JLabel("Last Move:  none");
         currentTurn = new JLabel("Turn:  White");
-        blank = new JLabel(" ");
+
+        temp = new JButton("AI");
+        temp.addActionListener(listener);
 
         // Panels
         JPanel boardpanel = new JPanel();
 
-        JPanel buttonpanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 50));
-       buttonpanel.setLayout(new BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
-        //buttonpanel.add(Box.createRigidArea(new Dimension(30, 40)));
-        setLayout(new BorderLayout());
-        lastMove.setBorder(new EmptyBorder(10,0,10,0));
-        currentTurn.setBorder(new EmptyBorder(10,0,10,0));
-        newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lastMove.setAlignmentX(Component.CENTER_ALIGNMENT);
-        undo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel buttonpanel = new JPanel();
+        buttonpanel.setLayout(new BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
+        buttonpanel.add(Box.createRigidArea(new Dimension(30,40)));
 
         buttonpanel.add(newGame);
-        buttonpanel.add(lastMove);
+//        buttonpanel.add(lastMove);
         buttonpanel.add(undo);
+        buttonpanel.add(castleLeft);
+        buttonpanel.add(castleRight);
+        buttonpanel.add(temp);
+
         buttonpanel.add(currentTurn);
 
-        boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns(), 1, 1));
+        newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        lastMove.setAlignmentX(Component.CENTER_ALIGNMENT);
+        undo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        castleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
+        castleRight.setAlignmentX(Component.CENTER_ALIGNMENT);
+        temp.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+        boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns()));
 
         createIcons();
 
@@ -101,10 +116,11 @@ public class ChessPanel extends JPanel {
                 boardpanel.add(board[r][c]);
             }
         }
-        boardpanel.setPreferredSize(new Dimension(600, 550));
+        boardpanel.setPreferredSize(new Dimension(700, 600));
 
-        add(boardpanel, BorderLayout.WEST);
-        add(buttonpanel, BorderLayout.CENTER);
+        setLayout(new BorderLayout());
+        add(boardpanel, BorderLayout.CENTER);
+        add(buttonpanel, BorderLayout.EAST);
 
         firstTurnFlag = true;
     }
@@ -173,35 +189,36 @@ public class ChessPanel extends JPanel {
 
     private void createIcons() {
         // Sets the Image for white player pieces
-        wRook = new ImageIcon("./src/chess/images/wRook.png");
-        wBishop = new ImageIcon("./src/chess/images/wBishop.png");
-        wQueen = new ImageIcon("./src/chess/images/wQueen.png");
-        wKing = new ImageIcon("./src/chess/images/wKing.png");
-        wPawn = new ImageIcon("./src/chess/images/wPawn.png");
-        wKnight = new ImageIcon("./src/chess/images/wKnight.png");
+        wRook = new ImageIcon("./src/Project3/wRook.png");
+        wBishop = new ImageIcon("./src/Project3/wBishop.png");
+        wQueen = new ImageIcon("./src/Project3/wQueen.png");
+        wKing = new ImageIcon("./src/Project3/wKing.png");
+        wPawn = new ImageIcon("./src/Project3/wPawn.png");
+        wKnight = new ImageIcon("./src/Project3/wKnight.png");
 
-        bRook = new ImageIcon("./src/chess/images/bRook.png");
-        bBishop = new ImageIcon("./src/chess/images/bBishop.png");
-        bQueen = new ImageIcon("./src/chess/images/bQueen.png");
-        bKing = new ImageIcon("./src/chess/images/bKing.png");
-        bPawn = new ImageIcon("./src/chess/images/bPawn.png");
-        bKnight = new ImageIcon("./src/chess/images/bKnight.png");
+        bRook = new ImageIcon("./src/Project3/bRook.png");
+        bBishop = new ImageIcon("./src/Project3/bBishop.png");
+        bQueen = new ImageIcon("./src/Project3/bQueen.png");
+        bKing = new ImageIcon("./src/Project3/bKing.png");
+        bPawn = new ImageIcon("./src/Project3/bPawn.png");
+        bKnight = new ImageIcon("./src/Project3/bKnight.png");
     }
 
     private void toggleSpace(int r, int c, boolean select) {
         if (select) {
             board[r][c].setBackground(Color.PINK);
-            System.out.println("Highlighting" + " [ " + r + " ] " + " [ " + c + " ] ");
+            System.out.println("Highlighting" + " [ " +  r  + " ] " + " [ " + c + " ] ");
         } else {
             setBackGroundColor(r, c);
-            System.out.println("Un-Highlighting" + " [ " + r + " ] " + " [ " + c + " ] ");
+            System.out.println("Un-Highlighting" + " [ " + r  + " ] " + " [ " + c + " ] ");
         }
     }
 
     // method that updates the board
     private void displayBoard() {
+
         for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++)
+            for (int c = 0; c < 8; c++) {
                 if (model.pieceAt(r, c) == null)
                     board[r][c].setIcon(null);
                 else if (model.pieceAt(r, c).player() == Player.WHITE) {
@@ -222,8 +239,7 @@ public class ChessPanel extends JPanel {
 
                     if (model.pieceAt(r, c).type().equals("King"))
                         board[r][c].setIcon(wKing);
-
-                } else {
+                } else if (model.pieceAt(r, c).player() == Player.BLACK) {
                     if (model.pieceAt(r, c).type().equals("Pawn"))
                         board[r][c].setIcon(bPawn);
 
@@ -242,16 +258,13 @@ public class ChessPanel extends JPanel {
                     if (model.pieceAt(r, c).type().equals("King"))
                         board[r][c].setIcon(bKing);
                 }
+                repaint();
+            }
         }
-
-        repaint();
         if (model.inCheck(model.currentPlayer()))
-            JOptionPane.showMessageDialog(null, model.currentPlayer()+ " King in Check");
-        //if (model.inCheck(Player.BLACK))
-         //   JOptionPane.showMessageDialog(null, "Black in Check");
-        //if (model.inCheck(Player.WHITE))
-         //   JOptionPane.showMessageDialog(null, "White in Check");
-
+            JOptionPane.showMessageDialog(null, "King in Check");
+        if (model.isComplete())
+            JOptionPane.showMessageDialog(null, "Checkmate");
     }
 
     // inner class that represents action listener for buttons
@@ -260,7 +273,7 @@ public class ChessPanel extends JPanel {
             if (newGame == event.getSource()) {
                 model.newGame();
                 currentTurn.setText("Turn: White");
-                lastMove.setText("Last Move: ");
+//                lastMove.setText("Last Move: ");
                 displayBoard();
             }
             if (undo == event.getSource()) {
@@ -268,6 +281,27 @@ public class ChessPanel extends JPanel {
                 displayBoard();
                 currentTurn.setText("Turn : " + model.currentPlayer());
             }
+            if (castleRight == event.getSource()) {
+                if (model.castleKingSide()) {
+                    displayBoard();
+                    model.setNextPlayer();
+                    currentTurn.setText("Turn : " + model.currentPlayer());
+                }
+            }
+            if (castleLeft == event.getSource()) {
+                if (model.castleQueenSide()) {
+                    displayBoard();
+                    model.setNextPlayer();
+                    currentTurn.setText("Turn : " + model.currentPlayer());
+                }
+            }
+            if (temp == event.getSource()) {
+                model.AI();
+                displayBoard();
+                if (!model.isComplete())
+                    model.setNextPlayer();
+            }
+
             for (int r = 0; r < model.numRows(); r++)
                 for (int c = 0; c < model.numColumns(); c++)
                     if (board[r][c] == event.getSource()) {
@@ -282,7 +316,8 @@ public class ChessPanel extends JPanel {
                                 if (model.pieceAt(r, c).player() == model.currentPlayer())
                                     toggleSpace(fromRow, fromCol, true);
 
-                            } else {
+                            }
+                            else {
                                 toRow = r;
                                 toCol = c;
                                 firstTurnFlag = true;
@@ -294,12 +329,17 @@ public class ChessPanel extends JPanel {
 //                                    toggleSpace(fromRow, fromCol, false);
                                     model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.move(m);
+                                    model.setPassantable();
+                                    if (model.ifPromote())
+                                        model.toPromote(toRow, toCol);
                                     model.setNextPlayer();
+//                                    model.AI();
+//                                    displayBoard();
+//                                    model.setNextPlayer();
+
                                 }
-                                lastMove.setText(m.toString()); // FIXME
-
+//                                lastMove.setText(m.toString()); // FIXME
                                 currentTurn.setText("Turn : " + model.currentPlayer()); // FIXME
-
                                 displayBoard();
 
                             }
