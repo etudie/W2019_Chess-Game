@@ -1,8 +1,5 @@
 package Project3;
 
-
-import Project1.SimpleDate;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -207,13 +204,88 @@ public class ChessTest {
     }
 
     @Test
+    public void testUndo() {
+        ChessModel game = new ChessModel();
+        if (game.isValidMove(new Move(6,6,4,6))) {
+            game.saveMove(6,6,4,6);
+            game.move(new Move(6, 6, 4, 6));
+            game.setNextPlayer();
+        }
+        game.undo();
+        assertEquals("Pawn", game.pieceAt(6,6).type());
+    }
+
+    @Test
+    public void testSetPassantable() {
+        ChessModel game = new ChessModel();
+        if (game.isValidMove(new Move(6,6,4,6))) {
+            game.saveMove(6,6,4,6);
+            game.move(new Move(6, 6, 4, 6));
+            game.setNextPlayer();
+            game.setPassantable();
+        }
+        assertTrue(game.pieceAt(4,6).hasMoved());
+        if (game.isValidMove(new Move(1,5,3,5))) {
+            game.saveMove(1,5,3,5);
+            game.move(new Move(1,5,3,5));
+            game.setNextPlayer();
+            game.setPassantable();
+        }
+        assertTrue(game.pieceAt(3,5).hasMoved());
+        assertFalse(game.pieceAt(4,6).hasMoved());
+
+    }
+
+    @Test
     public void castleWhite(){
+        ChessModel game = new ChessModel();
+        if (game.isValidMove(new Move(7,6,5,5)))
+            game.move(new Move(7,6,5,5));
+        if (game.isValidMove(new Move(6,6,5,6)))
+            game.move(new Move(6,6,5,5));
+        if (game.isValidMove(new Move(7,5,6,6)))
+            game.move(new Move(7,5,6,6));
+        assertTrue(game.castleKingSide());
 
     }
 
     @Test
     public void castleBlack(){
+        ChessModel game = new ChessModel();
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(0,1,2,2)))
+            game.move(new Move(0,1,2,2));
+        if (game.isValidMove(new Move(1,1,2,1)))
+            game.move(new Move(1,1,2,1));
+        if (game.isValidMove(new Move(0,2,1,1)))
+            game.move(new Move(0,2,1,1));
+        if (game.isValidMove(new Move(1,3,2,3)))
+            game.move(new Move(1,3,2,3));
+        if (game.isValidMove(new Move(0,3,1,3)))
+            game.move(new Move(0,3,1,3));
+        assertTrue(game.castleQueenSide());
 
+    }
+
+    @Test
+    public void enPassant() {
+        ChessModel game = new ChessModel();
+        if (game.isValidMove(new Move(6,6,4,6)))
+            game.move(new Move(6,6,4,6));
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(1,5,3,5)))
+            game.move(new Move(1,5,3,5));
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(4,6,3,6)))
+            game.move(new Move(4,6,3,6));
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(1,7,3,7)))
+            game.move(new Move(1,7,3,7));
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(3,6,2,7)))
+            game.move(new Move(3,6,2,7));
+        assertEquals("Pawn", game.pieceAt(2, 7).type());
+        assertNull(game.pieceAt(3, 7));
     }
 
     @Test
