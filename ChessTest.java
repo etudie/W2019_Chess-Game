@@ -268,7 +268,7 @@ public class ChessTest {
     }
 
     @Test
-    public void enPassant() {
+    public void whiteEnPassant() {
         ChessModel game = new ChessModel();
         if (game.isValidMove(new Move(6,6,4,6)))
             game.move(new Move(6,6,4,6));
@@ -286,6 +286,30 @@ public class ChessTest {
             game.move(new Move(3,6,2,7));
         assertEquals("Pawn", game.pieceAt(2, 7).type());
         assertNull(game.pieceAt(3, 7));
+    }
+
+    @Test
+    public void blackEnPassant() {
+        ChessModel game = new ChessModel();
+        if (game.isValidMove(new Move(6,4,4,4)))
+            game.move(new Move(6,4,4,4));
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(1,5,3,5)))
+            game.move(new Move(1,5,3,5));
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(4,4,3,4)))
+            game.move(new Move(4,4,3,4));
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(3,5,4,5)))
+            game.move(new Move(3,5,4,5));
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(6,6,4,6)))
+            game.move(new Move(6,6,4,6));
+        game.setNextPlayer();
+        if (game.isValidMove(new Move(4,5,5,6)))
+            game.move(new Move(4,5,5,6));
+        assertEquals("Pawn", game.pieceAt(5, 6).type());
+        assertNull(game.pieceAt(4, 5));
     }
 
     @Test

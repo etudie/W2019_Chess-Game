@@ -37,8 +37,6 @@ public class Pawn extends ChessPiece {
 
         if (super.isValidMove(move, board)) {
 
-            System.out.print("...moving PAWN");
-
             //  MOVING FORWARD //
             if (move.toColumn == move.fromColumn) {
                 if (player() == Player.WHITE) {
@@ -46,7 +44,6 @@ public class Pawn extends ChessPiece {
                         if (((move.toRow == move.fromRow - 1) || (move.toRow == move.fromRow - 2))
                                 && board[move.toRow][move.toColumn] == null) {
                             valid = true;
-                            System.out.println("...2 spaces... SUCCESS");
                             if ((move.toRow == move.fromRow - 2))
                                 board[move.fromRow][move.fromColumn].setHasMoved(true);
                             firstMove = false;      // disables the flag for remaining of the game
@@ -56,7 +53,6 @@ public class Pawn extends ChessPiece {
                         if (move.toRow == move.fromRow - 1) {
                             if (board[move.toRow][move.toColumn] == null) {
                                 valid = true;
-                                System.out.println("...1 space... SUCCESS");
                             }
                         }
                     }
@@ -67,7 +63,6 @@ public class Pawn extends ChessPiece {
                         if ((move.toRow == move.fromRow + 1) || (move.toRow == move.fromRow + 2)
                                 && board[move.toRow][move.toColumn] == null) {
                             valid = true;
-                            System.out.println("...2 spaces... SUCCESS");
                             if ((move.toRow == move.fromRow + 2))
                                 board[move.fromRow][move.fromColumn].setHasMoved(true);
                             firstMove = false;
@@ -77,8 +72,6 @@ public class Pawn extends ChessPiece {
                         if (move.toRow == move.fromRow + 1) {
                             if (board[move.toRow][move.toColumn] == null) {
                                 valid = true;
-                                System.out.println("...1 space... SUCCESS");
-
                             }
                         }
                     }
@@ -111,17 +104,8 @@ public class Pawn extends ChessPiece {
             // MOVING TO CAPTURE //
             if (ifCapture(move, board))
                 valid = true;
-            if (!valid)
-                System.out.println("...invalid move!");
 
         }
-
-//        if (valid)
-//            if (ifPromote(move)) {
-//                toPromote(move, board);
-//                /*board[move.toRow][move.toColumn] = new Rook(player());
-//                board[move.fromRow][move.fromColumn] = null;*/
-//            }
 
         return valid;
     }
