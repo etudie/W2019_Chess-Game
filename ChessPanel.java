@@ -42,10 +42,8 @@ public class ChessPanel extends JPanel {
     private JButton newGame;
     private JButton castleLeft;
     private JButton castleRight;
-    private JLabel lastMove;
     private JLabel currentTurn;
-    private JButton temp;
-    // declare other intance variables as needed
+    private JButton AI;
 
     private listener listener;
 
@@ -70,8 +68,8 @@ public class ChessPanel extends JPanel {
 //        lastMove = new JLabel("Last Move:  none");
         currentTurn = new JLabel("Turn:  White");
 
-        temp = new JButton("AI");
-        temp.addActionListener(listener);
+        AI = new JButton("AI");
+        AI.addActionListener(listener);
 
         // Panels
         JPanel boardpanel = new JPanel();
@@ -84,7 +82,7 @@ public class ChessPanel extends JPanel {
         buttonpanel.add(undo);
         buttonpanel.add(castleLeft);
         buttonpanel.add(castleRight);
-        buttonpanel.add(temp);
+        buttonpanel.add(AI);
 
         buttonpanel.add(currentTurn);
 
@@ -93,8 +91,8 @@ public class ChessPanel extends JPanel {
         currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
         castleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
         castleRight.setAlignmentX(Component.CENTER_ALIGNMENT);
-        temp.setAlignmentX(Component.CENTER_ALIGNMENT);
-        temp.setEnabled(false);
+        AI.setAlignmentX(Component.CENTER_ALIGNMENT);
+        AI.setEnabled(false);
 
 
         boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns()));
@@ -206,10 +204,8 @@ public class ChessPanel extends JPanel {
     private void toggleSpace(int r, int c, boolean select) {
         if (select) {
             board[r][c].setBackground(Color.PINK);
-            System.out.println("Highlighting" + " [ " +  r  + " ] " + " [ " + c + " ] ");
         } else {
             setBackGroundColor(r, c);
-            System.out.println("Un-Highlighting" + " [ " + r  + " ] " + " [ " + c + " ] ");
         }
     }
 
@@ -271,20 +267,26 @@ public class ChessPanel extends JPanel {
     // inner class that represents action listener for buttons
     private class listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+
+            // Resets the game.
             if (newGame == event.getSource()) {
                 model.newGame();
                 currentTurn.setText("Turn: White");
                 displayBoard();
             }
+
+            // Undoes the last move.
             if (undo == event.getSource()) {
                 model.undo();
                 displayBoard();
                 currentTurn.setText("Turn : " + model.currentPlayer());
                 if (model.currentPlayer().equals(Player.BLACK))
-                    temp.setEnabled(true);
+                    AI.setEnabled(true);
                 else
-                    temp.setEnabled(false);
+                    AI.setEnabled(false);
             }
+
+            // Castles king-side.
             if (castleRight == event.getSource()) {
                 if (model.castleKingSide()) {
                     displayBoard();
@@ -292,6 +294,8 @@ public class ChessPanel extends JPanel {
                     currentTurn.setText("Turn : " + model.currentPlayer());
                 }
             }
+
+            // Castles queen-side.
             if (castleLeft == event.getSource()) {
                 if (model.castleQueenSide()) {
                     displayBoard();
@@ -299,13 +303,15 @@ public class ChessPanel extends JPanel {
                     currentTurn.setText("Turn : " + model.currentPlayer());
                 }
             }
-            if (temp == event.getSource()) {
+
+            // Calls the AI to make a move.
+            if (AI == event.getSource()) {
                 model.AI();
                 displayBoard();
                 if (!model.isComplete())
                     model.setNextPlayer();
                 currentTurn.setText("Turn : " + model.currentPlayer());
-                temp.setEnabled(false);
+                AI.setEnabled(false);
             }
 
             for (int r = 0; r < model.numRows(); r++)
@@ -313,7 +319,9 @@ public class ChessPanel extends JPanel {
                     if (board[r][c] == event.getSource()) {
 
                         // Only execute if space is occupied and it is the piece's turn OR it is not the first Turn
-                        if ((model.isOccupied(r, c) && model.pieceAt(r, c).player() == model.currentPlayer()) || !firstTurnFlag) {
+                        if ((model.isOccupied(r, c) &&
+                                model.pieceAt(r, c).player() ==
+                                        model.currentPlayer()) || !firstTurnFlag) {
 
                             if (firstTurnFlag == true) {
                                 fromRow = r;
@@ -332,20 +340,18 @@ public class ChessPanel extends JPanel {
                                 toggleSpace(fromRow, fromCol, false);
                                 if ((model.isValidMove(m)) == true) {
 
-//                                    toggleSpace(fromRow, fromCol, false);
                                     model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.move(m);
                                     model.setPassantable();
                                     if (model.ifPromote())
                                         model.toPromote(toRow, toCol);
                                     model.setNextPlayer();
-                                    temp.setEnabled(true);
-//                                    model.AI();
-//                                    displayBoard();
-//                                    model.setNextPlayer();
+                                    if (model.currentPlayer().equals(Player.BLACK))
+                                        AI.setEnabled(true);
+                                    else
+                                        AI.setEnabled(false);
 
                                 }
-//                                lastMove.setText(m.toString()); // FIXME
                                 currentTurn.setText("Turn : " + model.currentPlayer()); // FIXME
                                 displayBoard();
 

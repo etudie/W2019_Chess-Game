@@ -1,5 +1,11 @@
 package Project3;
 
+/**********************************************************************
+ * Class that handles game manipulation of bishop.
+ *
+ * @author Amela Aganovic
+ * @version Winter 2019
+ *********************************************************************/
 public class Bishop extends ChessPiece {
     public boolean moved;
 
@@ -59,6 +65,14 @@ public class Bishop extends ChessPiece {
         return valid;
     }
 
+    /******************************************************************
+     * Determines whether any of the squares between bishop and its'
+     * goal are occupied by another piece.
+     *
+     * @param move the move bishop is attempting to make.
+     * @param board the game board.
+     * @return true if occupied, false if not.
+     *****************************************************************/
     private boolean isOccupied(Move move, IChessPiece[][] board) {
         int row = move.fromRow;
         int col = move.fromColumn;

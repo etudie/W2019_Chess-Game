@@ -1,4 +1,5 @@
 package Project3;
+
 /*****************************************************************
  * A Knight piece in a chess game.
  *
@@ -6,9 +7,10 @@ package Project3;
  * @version Winter 2019
  *****************************************************************/
 public class Knight extends ChessPiece {
+
+    /** Checks if knight has moved */
     public boolean moved;
 
-    // AMELA: I'll make the comments better later
 
     /*****************************************************************
      * Constructor for the knight piece
@@ -39,9 +41,10 @@ public class Knight extends ChessPiece {
 
     /*****************************************************************
      * Determining valid moves for the selected knight piece
-     * @param move the move
-     * @param board the chest board
-     * @return true if move is valid
+     *
+     * @param move the move.
+     * @param board the chest board.
+     * @return true if move is valid, false if not.
      *****************************************************************/
     public boolean isValidMove(Move move, IChessPiece[][] board){
 

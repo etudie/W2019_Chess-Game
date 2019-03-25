@@ -169,6 +169,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Helper method that handles promotion of pawn piece.
+     *
      * @param toRow Row of promotion space
      * @param toCol Column of promotion space
      *****************************************************************/
@@ -324,6 +325,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Helper method that handles saving of a move made by player.
+     *
      * @param row the previous row of the piece.
      * @param col the previous column of the moved piece.
      * @param nextRow the row the piece moved to.
@@ -459,9 +461,9 @@ public class ChessModel implements IChessModel {
     /*****************************************************************
      * Checker method to verify that move is valid. Is called for
      * all pieces.
+     *
      * @param move argument of class move
-     * @return  true if move is valid
-     *         false if move is invalid
+     * @return  true if move is valid, false if move is invalid.
      *****************************************************************/
     public boolean isValidMove(Move move) {
         boolean valid = false;
@@ -599,6 +601,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Determines whether a king is in check
+     *
      * @param p argument passes player type
      *****************************************************************/
     public boolean inCheck(Player p) {
@@ -657,6 +660,7 @@ public class ChessModel implements IChessModel {
     /*****************************************************************
      * Helper method to castle on the king side. Determines whether
      * the current player can castle, and if it can, does.
+     *
      * @return true if can castle, false if not.
      *****************************************************************/
     public boolean castleKingSide() {
@@ -713,6 +717,7 @@ public class ChessModel implements IChessModel {
     /*****************************************************************
      * Helper method to castle on the queen side. Determines whether
      * the current player can castle, and if it can, does.
+     *
      * @return true if can castle, false if not.
      *****************************************************************/
     public boolean castleQueenSide() {
@@ -770,6 +775,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Determines whether a piece can be attacked at row, col.
+     *
      * @return true if can be attacked, false if not.
      *****************************************************************/
     private boolean canBeAttacked(Player p, int row, int col) {
@@ -794,6 +800,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Returns the current player.
+     *
      * @return current player.
      *****************************************************************/
     public Player currentPlayer() {
@@ -802,6 +809,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Returns the number of rows.
+     *
      * @return 8.
      *****************************************************************/
     public int numRows() {
@@ -810,6 +818,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Returns the number of columns.
+     *
      * @return 8.
      *****************************************************************/
     public int numColumns() {
@@ -829,6 +838,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Checker method to verify if a space is occupied.
+     *
      * @param r     argument row
      * @param c     argument column
      *****************************************************************/
@@ -847,6 +857,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Method that sets a particular piece in argument's position.
+     *
      * @param row   argument row of space.
      * @param column argument row of column.
      * @param  piece type of piece to set.
@@ -860,22 +871,6 @@ public class ChessModel implements IChessModel {
      * board when called.
      *****************************************************************/
     public void AI() {
-        /*
-         * Write a simple AI set of rules in the following order.
-         * a. Check to see if you are in check.
-         * 		i. If so, get out of check by moving the king or placing a piece to block the check
-         *
-         * b. Attempt to put opponent into check (or checkmate).
-         * 		i. Attempt to put opponent into check without losing your piece
-         *		ii. Perhaps you have won the game.
-         *
-         *c. Determine if any of your pieces are in danger,
-         *		i. Move them if you can.
-         *		ii. Attempt to protect that piece.
-         *
-         *d. Move a piece (pawns first) forward toward opponent king
-         *		i. check to see if that piece is in danger of being removed, if so, move a different piece.
-         */
 
         if (inCheck(Player.BLACK))
             getOutOfCheck();
@@ -887,9 +882,9 @@ public class ChessModel implements IChessModel {
     }
 
     /*****************************************************************
-     * Checker method that verifies if valid move exists.
-     * @return true if pieces are able to move
-     *          false if pieces are unable to move
+     * Finds a place to move a piece.
+     *
+     * @return true if pieces are able to move, false if not.
      *****************************************************************/
     private void findAPlaceToMove() {
         int blackRow;
@@ -933,17 +928,21 @@ public class ChessModel implements IChessModel {
         }
     }
 
+    /******************************************************************
+     * Finds a place for a pawn to move, if it is able.
+     *
+     * @return true if a pawn can move, false if not.
+     *****************************************************************/
     private boolean canMovePawn() {
         Move attemptMove;
         Move moveBack;
         int fromRow = 0;
         int fromCol = 0;
-        int toRow = 0;
-        int toCol = 0;
 
         for (int r = 0; r < numRows(); r++) {
             for (int c = 0; c < numColumns(); c++) {
-                if (board[r][c] != null && board[r][c].type().equals("Pawn")
+                if (board[r][c] != null && board[r][c].type()
+                        .equals("Pawn")
                         && board[r][c].player().equals(Player.BLACK)) {
                     fromRow = r;
                     fromCol = c;
@@ -952,20 +951,25 @@ public class ChessModel implements IChessModel {
                         for (int j = 0; j < numColumns(); j++) {
                             if (board[i][j] == null)
                                 if (i+1 < numRows()) {
-                                    attemptMove = new Move(fromRow, fromCol, i+1, j);
-                                    moveBack = new Move(i+1, j, fromRow, fromCol);
-                                    if (isValidMove(attemptMove) && !canBeAttacked(Player.BLACK, i+1, j)) {
+                                    attemptMove = new Move(fromRow,
+                                            fromCol, i+1, j);
+                                    if (isValidMove(attemptMove) &&
+                                            !canBeAttacked(Player.BLACK, i+1, j)) {
                                         saveMove(r,c,i+1,j);
                                         move(attemptMove);
                                         return true;
                                     }
                                     else {
-                                        attemptMove = new Move(fromRow, fromCol, i, j);
-                                        moveBack = new Move(i, j, fromRow, fromCol);
+                                        attemptMove = new Move(fromRow,
+                                                fromCol, i, j);
+                                        moveBack = new Move(i, j,
+                                                fromRow, fromCol);
                                         if (isValidMove(attemptMove)) {
                                             saveMove(r,c,i,j);
                                             move(attemptMove);
-                                            if (!canBeAttacked(Player.BLACK, i, j))
+                                            if (!canBeAttacked(
+                                                    Player.BLACK,
+                                                    i, j))
                                                 return true;
                                             else {
                                                 move(moveBack);
@@ -976,11 +980,14 @@ public class ChessModel implements IChessModel {
 
                                 }
                                 else {
-                                    attemptMove = new Move(fromRow, fromCol, i, j);
-                                    moveBack = new Move(i, j, fromRow, fromCol);
+                                    attemptMove = new Move(fromRow,
+                                            fromCol, i, j);
+                                    moveBack = new Move(i, j, fromRow,
+                                            fromCol);
                                     if (isValidMove(attemptMove)) {
                                         move(attemptMove);
-                                        if (!canBeAttacked(Player.BLACK, i, j))
+                                        if (!canBeAttacked(
+                                                Player.BLACK, i, j))
                                             return true;
                                         else
                                             move(moveBack);
@@ -996,8 +1003,10 @@ public class ChessModel implements IChessModel {
         return false;
     }
 
-    public void getOutOfCheck() {
-        //FIXME this method is pretty similar to findAPlaceToMove
+    /******************************************************************
+     * Attempts to get Player Black out of check.
+     *****************************************************************/
+    private void getOutOfCheck() {
 
         Move attemptMove;
         int blackRow;
@@ -1006,7 +1015,8 @@ public class ChessModel implements IChessModel {
         for (int r = 0; r < numRows(); r++)
             for (int c = 0; c < numColumns(); c++) {
 
-                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)) {
+                if (board[r][c] != null && board[r][c].player().equals(
+                        Player.BLACK)) {
 
                     blackRow = r;
                     blackCol = c;
@@ -1014,9 +1024,11 @@ public class ChessModel implements IChessModel {
                     for (int i = 0; i < numRows(); i++)
                         for (int j = 0; j < numColumns(); j++) {
 
-                            attemptMove = new Move(blackRow, blackCol, i, j);
+                            attemptMove = new Move(blackRow, blackCol,
+                                    i, j);
 
-                            // the only valid move is moving out of check
+                            // the only valid move is moving out
+                            // of check
                             if (isValidMove(attemptMove)) {
                                 saveMove(r,c,i,j);
                                 move(attemptMove);
@@ -1030,10 +1042,12 @@ public class ChessModel implements IChessModel {
 
     }
 
+    /******************************************************************
+     * Attempts to put Player White in check.
+     *
+     * @return true if can put Player White in check safely.
+     *****************************************************************/
     private boolean attemptCheckmate() {
-        // FIXME i'm not too confident about this one
-
-        boolean valid = false;
 
         int whiteKingRow = 0;
         int whiteKingCol = 0;
@@ -1060,18 +1074,25 @@ public class ChessModel implements IChessModel {
         for (int r = 0; r < numRows(); r++)
             for (int c = 0; c < numColumns(); c++) {
 
-                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK)) {
+                if (board[r][c] != null && board[r][c].player().equals(
+                        Player.BLACK)) {
                     blackRow = r;
                     blackCol = c;
 
-                    for (int i = whiteKingRow-1; i < whiteKingRow+1; i++)
-                        for (int j = whiteKingCol-1; j < whiteKingCol+1; j++) {
+                    for (int i = whiteKingRow-1; i < whiteKingRow+1;
+                         i++)
+                        for (int j = whiteKingCol-1; j < whiteKingCol+1
+                                ; j++) {
 
-                            if (i >= 0 && j >= 0 && i < numRows() && j < numColumns()) {
-                                attemptMove = new Move(blackRow, blackCol, i, j);
-                                moveBack = new Move(i, j, blackRow, blackCol);
+                            if (i >= 0 && j >= 0 && i < numRows()
+                                    && j < numColumns()) {
+                                attemptMove = new Move(blackRow,
+                                        blackCol, i, j);
+                                moveBack = new Move(i, j, blackRow,
+                                        blackCol);
 
-                                if (isValidMove(attemptMove) && !canBeAttacked(Player.BLACK, i, j)) {
+                                if (isValidMove(attemptMove) &&
+                                        !canBeAttacked(Player.BLACK, i, j)) {
                                     saveMove(r,c,i,j);
                                     move(attemptMove);
 
@@ -1088,9 +1109,14 @@ public class ChessModel implements IChessModel {
                 }
             }
 
-        return valid;
+        return false;
     }
 
+    /******************************************************************
+     * Attempts to take the enemy's piece.
+     *
+     * @return true if possible, false if not.
+     *****************************************************************/
     private boolean attemptToTakeAPiece() {
         boolean valid = false;
 
@@ -1128,18 +1154,26 @@ public class ChessModel implements IChessModel {
         return valid;
     }
 
+    /******************************************************************
+     * Attempts to remove a piece from danger of being taken.
+     *
+     * @return true if possible, false if not.
+     *****************************************************************/
     private boolean attemptToRemoveDanger() {
 
         Move attemptMove;
 
         for (int r = 0; r < numRows(); r++) {
             for (int c  = 0; c < numColumns(); c++) {
-                if (board[r][c] != null && board[r][c].player().equals(Player.BLACK))
+                if (board[r][c] != null && board[r][c].player()
+                        .equals(Player.BLACK))
                     if (canBeAttacked(Player.BLACK, r, c)) {
                         for (int i = 0; i < numRows(); i++) {
                             for (int j = 0; j < numColumns(); j++) {
                                 attemptMove = new Move(r,c,i,j);
-                                if (isValidMove(attemptMove) && !canBeAttacked(Player.BLACK, i, j)) {
+                                if (isValidMove(attemptMove) &&
+                                        !canBeAttacked(Player.BLACK,
+                                                i, j)) {
                                     saveMove(r,c,i,j);
                                     move(attemptMove);
                                     return true;
