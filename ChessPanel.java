@@ -81,7 +81,6 @@ public class ChessPanel extends JPanel {
         buttonpanel.add(Box.createRigidArea(new Dimension(30,40)));
 
         buttonpanel.add(newGame);
-//        buttonpanel.add(lastMove);
         buttonpanel.add(undo);
         buttonpanel.add(castleLeft);
         buttonpanel.add(castleRight);
@@ -90,12 +89,12 @@ public class ChessPanel extends JPanel {
         buttonpanel.add(currentTurn);
 
         newGame.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        lastMove.setAlignmentX(Component.CENTER_ALIGNMENT);
         undo.setAlignmentX(Component.CENTER_ALIGNMENT);
         currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
         castleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
         castleRight.setAlignmentX(Component.CENTER_ALIGNMENT);
         temp.setAlignmentX(Component.CENTER_ALIGNMENT);
+        temp.setEnabled(false);
 
 
         boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns()));
@@ -261,8 +260,10 @@ public class ChessPanel extends JPanel {
                 repaint();
             }
         }
-        if (model.inCheck(model.currentPlayer()))
-            JOptionPane.showMessageDialog(null, "King in Check");
+        if (model.inCheck(Player.WHITE))
+            JOptionPane.showMessageDialog(null, "White King in Check");
+        if (model.inCheck(Player.BLACK))
+            JOptionPane.showMessageDialog(null, "Black King in Check");
         if (model.isComplete())
             JOptionPane.showMessageDialog(null, "Checkmate");
     }
@@ -273,13 +274,16 @@ public class ChessPanel extends JPanel {
             if (newGame == event.getSource()) {
                 model.newGame();
                 currentTurn.setText("Turn: White");
-//                lastMove.setText("Last Move: ");
                 displayBoard();
             }
             if (undo == event.getSource()) {
                 model.undo();
                 displayBoard();
                 currentTurn.setText("Turn : " + model.currentPlayer());
+                if (model.currentPlayer().equals(Player.BLACK))
+                    temp.setEnabled(true);
+                else
+                    temp.setEnabled(false);
             }
             if (castleRight == event.getSource()) {
                 if (model.castleKingSide()) {
@@ -300,6 +304,8 @@ public class ChessPanel extends JPanel {
                 displayBoard();
                 if (!model.isComplete())
                     model.setNextPlayer();
+                currentTurn.setText("Turn : " + model.currentPlayer());
+                temp.setEnabled(false);
             }
 
             for (int r = 0; r < model.numRows(); r++)
@@ -333,6 +339,7 @@ public class ChessPanel extends JPanel {
                                     if (model.ifPromote())
                                         model.toPromote(toRow, toCol);
                                     model.setNextPlayer();
+                                    temp.setEnabled(true);
 //                                    model.AI();
 //                                    displayBoard();
 //                                    model.setNextPlayer();

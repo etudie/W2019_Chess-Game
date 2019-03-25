@@ -1,24 +1,4 @@
-
 # chessProject
-
-Last updated: 16 March 2019 
-- Highlight Space when selected 
-- Displays current turn colour 
-- inCheck() for pawn, knight, rook
-- Pawns no longer capture same coloured pieces 
-- Pieces rightfully operates in turns (white then black then white, etc. ) 
-
-Read full Log [here](https://github.com/etudie/chessProject/wiki/Full-Update-List)
-
-
-
-![](https://i.ibb.co/XSnx4GY/one.gif)
-**GIF recording of Functionality**
-
-No changes below this line
-
---------------------------------------------------------------------------------
-
 ## Objectives
 - To design, implement, and test a small class hierarchy 
 - To use two dimensional arrays and enum types and implement a GUI-base game 
@@ -27,15 +7,11 @@ working with a group on a project
 ## Description
 A program that implements a simple GUI program that allows two players to play a chess. The challenge was to design and organize pieces into a class hierarchy that utilizes polymorphism. 
 
-**FEATURES**
+**IChessModel.java ( UNCHANGED )** 
 
-HIGHLIGHTING
+**IchessPiece.java ( UNCHANGED )** 
 
-![highlight](https://i.imgur.com/OiuFpYe.png)
-
-- **IChessModel.java ( UNCHANGED )** 
-- **IchessPiece.java ( UNCHANGED )** 
-- **Player.java ( UNCHANGED )** 
+**Player.java ( UNCHANGED )** 
 
 **ChessModel.java**
 
@@ -70,10 +46,3 @@ Contains main method that creates and displays the chess game GUI. Use chess pie
 - King.java extends `ChessPiece` 
 - Queen.java extends `ChessPiece`
 - Bishop.java extends `ChessPiece`
-
-![](https://i.imgur.com/DFecr70.png)
-**UML Diagram**
-
-| BEFORE | AFTER |
-|--|--|
-| ![BEFORE](http://g.recordit.co/Q7A2C6SdWL.gif) | ![AFTER](https://i.ibb.co/XSnx4GY/one.gif) |
