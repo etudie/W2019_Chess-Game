@@ -1,54 +1,102 @@
-package Project3;
-/*	ChessPanel.java
-This class is responsible for
-1. presenting the GUI
-2. respond to user actions
-3. updates view
-4. allows white to move before black
-5. allows only valid moves
- */
+package ChessVersion4;
+/**********************************************************************
+ * A graphical representation of a chess game.
+ *
+ * @author Amela Aganovic, Emily Linderman, Xue Hua
+ * @version Winter 2019
+ *********************************************************************/
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.BorderLayout;
 
+/**********************************************************************
+ * A graphical representation of a chess game.
+ *
+ * @author Amela Aganovic, Emily Linderman, Xue Hua
+ * @version Winter 2019
+ *********************************************************************/
 public class ChessPanel extends JPanel {
 
+    /** array of chess board as JButtons */
     private JButton[][] board;
+
+    /** current player type */
     private ChessModel model;
 
+    /** white rook icon */
     private ImageIcon wRook;
+
+    /** white bishop icon */
     private ImageIcon wBishop;
+
+    /** white queen icon */
     private ImageIcon wQueen;
+
+    /** white king icon */
     private ImageIcon wKing;
+
+    /** white pawn icon */
     private ImageIcon wPawn;
+
+    /** white knight icon */
     private ImageIcon wKnight;
 
+    /** black rook icon */
     private ImageIcon bRook;
+
+    /** black bishop icon */
     private ImageIcon bBishop;
+
+    /** black queen icon */
     private ImageIcon bQueen;
+
+    /** black king icon */
     private ImageIcon bKing;
+
+    /** black pawn icon */
     private ImageIcon bPawn;
+
+    /** black knight icon */
     private ImageIcon bKnight;
 
+    /** flag status of chess piece */
     private boolean firstTurnFlag;
+
+    /** current row co-ordinates of chess piece */
     private int fromRow;
+
+    /** current column co-ordinates of chess piece */
     private int toRow;
+
+    /** advancing row co-ordinates of chess piece */
     private int fromCol;
+
+    /** advancing column co-ordinates of chess piece */
     private int toCol;
 
+    /** undo button */
     private JButton undo;
-    private JButton newGame;
-    private JButton castleLeft;
-    private JButton castleRight;
-    private JLabel lastMove;
-    private JLabel currentTurn;
-    private JButton temp;
-    // declare other intance variables as needed
 
+    /** new game button */
+    private JButton newGame;
+
+    /** left castle button */
+    private JButton castleLeft;
+
+    /** right castle button */
+    private JButton castleRight;
+
+    /** current player turn label */
+    private JLabel currentTurn;
+
+    /** listener for gameplay */
     private listener listener;
 
+    /**********************************************************************
+     * Constructor for ChessPanel
+     *********************************************************************/
     public ChessPanel() {
         model = new ChessModel();
         board = new JButton[model.numRows()][model.numColumns()];
@@ -66,25 +114,19 @@ public class ChessPanel extends JPanel {
 
         castleRight = new JButton("Castle Right");
         castleRight.addActionListener(listener);
-
-//        lastMove = new JLabel("Last Move:  none");
-        currentTurn = new JLabel("Turn:  White");
-
-        temp = new JButton("AI");
-        temp.addActionListener(listener);
+        currentTurn = new JLabel("Turn:  WHITE");
 
         // Panels
         JPanel boardpanel = new JPanel();
 
         JPanel buttonpanel = new JPanel();
         buttonpanel.setLayout(new BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
-        buttonpanel.add(Box.createRigidArea(new Dimension(30,40)));
+        buttonpanel.add(Box.createRigidArea(new Dimension(30, 40)));
 
         buttonpanel.add(newGame);
         buttonpanel.add(undo);
         buttonpanel.add(castleLeft);
         buttonpanel.add(castleRight);
-        buttonpanel.add(temp);
 
         buttonpanel.add(currentTurn);
 
@@ -93,8 +135,6 @@ public class ChessPanel extends JPanel {
         currentTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
         castleLeft.setAlignmentX(Component.CENTER_ALIGNMENT);
         castleRight.setAlignmentX(Component.CENTER_ALIGNMENT);
-        temp.setAlignmentX(Component.CENTER_ALIGNMENT);
-        temp.setEnabled(false);
 
 
         boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns()));
@@ -124,6 +164,9 @@ public class ChessPanel extends JPanel {
         firstTurnFlag = true;
     }
 
+    /**********************************************************************
+     * Helper method that sets background color of board.
+     *********************************************************************/
     private void setBackGroundColor(int r, int c) {
         if ((c % 2 == 1 && r % 2 == 0) || (c % 2 == 0 && r % 2 == 1)) {
             board[r][c].setBackground(Color.LIGHT_GRAY);
@@ -132,6 +175,11 @@ public class ChessPanel extends JPanel {
         }
     }
 
+    /**********************************************************************
+     * Helper method that places white pieces on board.
+     * @param r argument for row
+     * @param c argument for column
+     *********************************************************************/
     private void placeWhitePieces(int r, int c) {
         if (model.pieceAt(r, c).type().equals("Pawn")) {
             board[r][c] = new JButton(null, wPawn);
@@ -159,6 +207,11 @@ public class ChessPanel extends JPanel {
         }
     }
 
+    /**********************************************************************
+     * Helper method that places white pieces on board.
+     * @param r argument for row
+     * @param c argument for column
+     *********************************************************************/
     private void placeBlackPieces(int r, int c) {
         if (model.pieceAt(r, c).type().equals("Pawn")) {
             board[r][c] = new JButton(null, bPawn);
@@ -186,34 +239,45 @@ public class ChessPanel extends JPanel {
         }
     }
 
+    /**********************************************************************
+     * Helper method that creates icons for graphical representation of
+     * icons.
+     *********************************************************************/
     private void createIcons() {
-        // Sets the Image for white player pieces
-        wRook = new ImageIcon("./src/Project3/wRook.png");
-        wBishop = new ImageIcon("./src/Project3/wBishop.png");
-        wQueen = new ImageIcon("./src/Project3/wQueen.png");
-        wKing = new ImageIcon("./src/Project3/wKing.png");
-        wPawn = new ImageIcon("./src/Project3/wPawn.png");
-        wKnight = new ImageIcon("./src/Project3/wKnight.png");
+        wRook = new ImageIcon("./src/ChessVersion4/images/wRook.png");
+        wBishop = new ImageIcon("./src/ChessVersion4/images/wBishop.png");
+        wQueen = new ImageIcon("./src/ChessVersion4/images/wQueen.png");
+        wKing = new ImageIcon("./src/ChessVersion4/images/wKing.png");
+        wPawn = new ImageIcon("./src/ChessVersion4/images/wPawn.png");
+        wKnight = new ImageIcon("./src/ChessVersion4/images/wKnight.png");
 
-        bRook = new ImageIcon("./src/Project3/bRook.png");
-        bBishop = new ImageIcon("./src/Project3/bBishop.png");
-        bQueen = new ImageIcon("./src/Project3/bQueen.png");
-        bKing = new ImageIcon("./src/Project3/bKing.png");
-        bPawn = new ImageIcon("./src/Project3/bPawn.png");
-        bKnight = new ImageIcon("./src/Project3/bKnight.png");
+        bRook = new ImageIcon("./src/ChessVersion4/images/bRook.png");
+        bBishop = new ImageIcon("./src/ChessVersion4/images/bBishop.png");
+        bQueen = new ImageIcon("./src/ChessVersion4/images/bQueen.png");
+        bKing = new ImageIcon("./src/ChessVersion4/images/bKing.png");
+        bPawn = new ImageIcon("./src/ChessVersion4/images/bPawn.png");
+        bKnight = new ImageIcon("./src/ChessVersion4/images/bKnight.png");
     }
 
+    /**********************************************************************
+     * Helper method that handles highlighting of spaces when selected.
+     * @param r argument for row
+     * @param c argument for column
+     * @param select argument that sets state of space
+     *********************************************************************/
     private void toggleSpace(int r, int c, boolean select) {
         if (select) {
             board[r][c].setBackground(Color.PINK);
-            System.out.println("Highlighting" + " [ " +  r  + " ] " + " [ " + c + " ] ");
+            System.out.println("Highlighting" + " [ " + r + " ] " + " [ " + c + " ] ");
         } else {
             setBackGroundColor(r, c);
-            System.out.println("Un-Highlighting" + " [ " + r  + " ] " + " [ " + c + " ] ");
+            System.out.println("Un-Highlighting" + " [ " + r + " ] " + " [ " + c + " ] ");
         }
     }
 
-    // method that updates the board
+    /**********************************************************************
+     * Helper method that repaints or updates the board.
+     *********************************************************************/
     private void displayBoard() {
 
         for (int r = 0; r < 8; r++) {
@@ -260,15 +324,18 @@ public class ChessPanel extends JPanel {
                 repaint();
             }
         }
-        if (model.inCheck(Player.WHITE))
-            JOptionPane.showMessageDialog(null, "White King in Check");
-        if (model.inCheck(Player.BLACK))
-            JOptionPane.showMessageDialog(null, "Black King in Check");
+
+        if (model.inCheck(model.currentPlayer()))
+            JOptionPane.showMessageDialog(null, "King in Check");
         if (model.isComplete())
             JOptionPane.showMessageDialog(null, "Checkmate");
+
     }
 
-    // inner class that represents action listener for buttons
+    /**********************************************************************
+     * Inner class that represents action listener for buttons. Acts as the
+     * trigger to gameplay and events.
+     *********************************************************************/
     private class listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if (newGame == event.getSource()) {
@@ -279,33 +346,15 @@ public class ChessPanel extends JPanel {
             if (undo == event.getSource()) {
                 model.undo();
                 displayBoard();
-                currentTurn.setText("Turn : " + model.currentPlayer());
-                if (model.currentPlayer().equals(Player.BLACK))
-                    temp.setEnabled(true);
-                else
-                    temp.setEnabled(false);
+                currentTurn.setText("Turn : " + model.currentPlayer()); //fixme
             }
             if (castleRight == event.getSource()) {
-                if (model.castleKingSide()) {
-                    displayBoard();
-                    model.setNextPlayer();
-                    currentTurn.setText("Turn : " + model.currentPlayer());
-                }
+                model.castleKingSide();
+                displayBoard();
             }
             if (castleLeft == event.getSource()) {
-                if (model.castleQueenSide()) {
-                    displayBoard();
-                    model.setNextPlayer();
-                    currentTurn.setText("Turn : " + model.currentPlayer());
-                }
-            }
-            if (temp == event.getSource()) {
-                model.AI();
+                model.castleQueenSide();
                 displayBoard();
-                if (!model.isComplete())
-                    model.setNextPlayer();
-                currentTurn.setText("Turn : " + model.currentPlayer());
-                temp.setEnabled(false);
             }
 
             for (int r = 0; r < model.numRows(); r++)
@@ -315,38 +364,30 @@ public class ChessPanel extends JPanel {
                         // Only execute if space is occupied and it is the piece's turn OR it is not the first Turn
                         if ((model.isOccupied(r, c) && model.pieceAt(r, c).player() == model.currentPlayer()) || !firstTurnFlag) {
 
-                            if (firstTurnFlag == true) {
+                            if (firstTurnFlag) {
                                 fromRow = r;
                                 fromCol = c;
                                 firstTurnFlag = false;
                                 if (model.pieceAt(r, c).player() == model.currentPlayer())
                                     toggleSpace(fromRow, fromCol, true);
 
-                            }
-                            else {
+                            } else {
                                 toRow = r;
                                 toCol = c;
                                 firstTurnFlag = true;
 
                                 Move m = new Move(fromRow, fromCol, toRow, toCol);
                                 toggleSpace(fromRow, fromCol, false);
-                                if ((model.isValidMove(m)) == true) {
-
-//                                    toggleSpace(fromRow, fromCol, false);
+                                if ((model.isValidMove(m))) {
                                     model.saveMove(fromRow, fromCol, toRow, toCol);
                                     model.move(m);
                                     model.setPassantable();
-                                    if (model.ifPromote())
+                                    if (model.isPromote()) {
                                         model.toPromote(toRow, toCol);
+                                    }
                                     model.setNextPlayer();
-                                    temp.setEnabled(true);
-//                                    model.AI();
-//                                    displayBoard();
-//                                    model.setNextPlayer();
-
                                 }
-//                                lastMove.setText(m.toString()); // FIXME
-                                currentTurn.setText("Turn : " + model.currentPlayer()); // FIXME
+                                currentTurn.setText("Turn : " + model.currentPlayer());
                                 displayBoard();
 
                             }

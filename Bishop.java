@@ -1,11 +1,18 @@
-package Project3;
+package ChessVersion4;
 
+/**********************************************************************
+ * Class that handles game manipulation of bishop
+ *
+ * @author Amela Aganovic, Emily Linderman, Xue Hua
+ * @version Winter 2019
+ *********************************************************************/
 public class Bishop extends ChessPiece {
+
+    /** Checks if bishop has moved */
     public boolean moved;
 
     /*****************************************************************
      * Constructor for the bishop piece
-     *
      * @param player the current player
      *****************************************************************/
     public Bishop(Player player) {
@@ -13,28 +20,38 @@ public class Bishop extends ChessPiece {
     }
 
     /*****************************************************************
-     * Returns the type of chess piece the piece is
-     *
-     * @return bishop
+     * Returns the type of chess piece the piece is as a String
+     * @return "Bishop"
      *****************************************************************/
     public String type() {
         return "Bishop";
     }
 
+
+    /*****************************************************************
+     * Returns if bishop has moved
+     * @return true if piece has moved
+     *         false if piece has not moved
+     *****************************************************************/
     public boolean hasMoved() {
         return false;
     }
 
+    /*****************************************************************
+     * Helper method to set move state of piece
+     * @param setMoved boolean argument to set state of piece
+     *****************************************************************/
     public void setHasMoved(boolean setMoved) {
         moved = setMoved;
     }
 
 
     /*****************************************************************
-     * Determining valid moves for the selected bishop piece
+     * Determining valid moves for the selected piece
      * @param move the move
      * @param board the chess board
      * @return true if move is valid
+     *         false if move is invalid
      *****************************************************************/
     public boolean isValidMove(Move move, IChessPiece[][] board) {
         boolean valid = false;
@@ -47,18 +64,21 @@ public class Bishop extends ChessPiece {
                     if (Math.abs(move.fromColumn - move.toColumn) == x) {
                         if (!isOccupied(move, board)) {
                             valid = true;
-                            System.out.println("Moving BISHOP");
                         }
                     }
             }
-
-            if (valid == false)
-                System.out.println("Invalid move for BISHOP");
         }
 
         return valid;
     }
 
+    /*****************************************************************
+     * Checker method if space is occupied
+     * @param move the move
+     * @param board the chess board
+     * @return true if space is occupied
+     *         false if space is unoccupied
+     *****************************************************************/
     private boolean isOccupied(Move move, IChessPiece[][] board) {
         int row = move.fromRow;
         int col = move.fromColumn;
@@ -66,7 +86,7 @@ public class Bishop extends ChessPiece {
         int origCol = col;
 
         if (move.toRow < origRow && move.toColumn < origCol) {
-            while (row-1 > move.toRow && col-1 > move.toColumn) {
+            while (row - 1 > move.toRow && col - 1 > move.toColumn) {
                 row--;
                 col--;
                 if (board[row][col] != null)
@@ -75,7 +95,7 @@ public class Bishop extends ChessPiece {
         }
 
         if (move.toRow < origRow && move.toColumn > origCol) {
-            while (row-1 > move.toRow && col+1 < move.toColumn) {
+            while (row - 1 > move.toRow && col + 1 < move.toColumn) {
                 row--;
                 col++;
                 if (board[row][col] != null)
@@ -84,7 +104,7 @@ public class Bishop extends ChessPiece {
         }
 
         if (move.toRow > origRow && move.toColumn < origCol) {
-            while (row+1 < move.toRow && col-1 > move.toColumn) {
+            while (row + 1 < move.toRow && col - 1 > move.toColumn) {
                 row++;
                 col--;
                 if (board[row][col] != null)
@@ -94,7 +114,7 @@ public class Bishop extends ChessPiece {
 
 
         if (move.toRow > origRow && move.toColumn > origCol) {
-            while (row+1 < move.toRow && col+1 < move.toColumn) {
+            while (row + 1 < move.toRow && col + 1 < move.toColumn) {
                 row++;
                 col++;
                 if (board[row][col] != null)

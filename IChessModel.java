@@ -1,4 +1,4 @@
-package Project3;
+package ChessVersion4;
 
 public interface IChessModel {
 
