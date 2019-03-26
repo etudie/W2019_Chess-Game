@@ -43,6 +43,9 @@ public class ChessModel implements IChessModel {
     /** keeps track of when a pawn is promoted */
     private ArrayList<Boolean> promoted;
 
+    /** whether or not player is moving into check */
+    private boolean movingIntoCheck;
+
     /*****************************************************************
      * Constructor for ChessModel. Sets up the game and spans the
      * pieces. Resets relevant flags, counters, turns and other
@@ -52,6 +55,7 @@ public class ChessModel implements IChessModel {
         board = new IChessPiece[8][8];
         player = Player.WHITE;
 
+        movingIntoCheck = false;
 
         deletedPiece = new ArrayList<>();
         previousRow = new ArrayList<>();
@@ -138,6 +142,8 @@ public class ChessModel implements IChessModel {
         setPiece(0, 6, new Knight(Player.BLACK));
         setPiece(0, 7, new Rook(Player.BLACK));
 
+        movingIntoCheck = false;
+
         deletedPiece = new ArrayList<>();
         previousRow = new ArrayList<>();
         previousColumn = new ArrayList<>();
@@ -192,6 +198,15 @@ public class ChessModel implements IChessModel {
             setPiece(toRow, toCol, new Rook(currentPlayer()));
         }
 
+    }
+
+    /*****************************************************************
+     * Checks if the player is attempting to move into check.
+     *
+     * @return true if player is trying to move into check.
+     *****************************************************************/
+    public boolean movingIntoCheck(){
+        return movingIntoCheck;
     }
 
     /*****************************************************************
@@ -357,6 +372,7 @@ public class ChessModel implements IChessModel {
 
     /*****************************************************************
      * Helper method that handles the deletion of a move.
+     *
      * @param index index of where move was stored.
      *****************************************************************/
     private void deleteMove(int index) {
@@ -490,6 +506,7 @@ public class ChessModel implements IChessModel {
 
                     if (inCheck(player)) {
                         // the player cannot move into check
+                        movingIntoCheck = true;
                         valid = false;
 
                         // move piece back
@@ -524,6 +541,7 @@ public class ChessModel implements IChessModel {
         if (valid) {
             move(moveBack);
             deleteLastMove();
+            movingIntoCheck = false;
 
             // deals with en passant
             if (player.equals(Player.WHITE)) {

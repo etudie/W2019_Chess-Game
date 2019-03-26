@@ -50,13 +50,11 @@ public class Knight extends ChessPiece {
 
         boolean valid = false;
         if(super.isValidMove(move,board)) {
-            System.out.println("... moving KNIGHT");
 
             // MOVING TWO VERTICALLY ONE HORIZONTALLY
             if (move.toColumn == move.fromColumn + 1 || move.toColumn == move.fromColumn - 1) {
                 if (move.toRow == move.fromRow + 2 || move.toRow == move.fromRow - 2) {
                     valid = true;
-                    System.out.println("... SUCCESS");
                 }
             }
 
@@ -64,7 +62,6 @@ public class Knight extends ChessPiece {
             if (move.toColumn == move.fromColumn + 2 || move.toColumn == move.fromColumn - 2) {
                 if (move.toRow == move.fromRow + 1 || move.toRow == move.fromRow - 1) {
                     valid = true;
-                    System.out.println("... SUCCESS");
                 }
             }
         }

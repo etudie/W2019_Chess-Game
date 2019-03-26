@@ -57,7 +57,6 @@ public class Queen extends ChessPiece {
      * @return true if move is valid, false if move is invalid
      *****************************************************************/
     public boolean isValidMove(Move move, IChessPiece[][] board) {
-        System.out.print("moving Queen ");
 
         if (super.isValidMove(move, board)) {
             Bishop move1 = new Bishop(board[move.fromRow]

@@ -151,7 +151,7 @@ public class ChessTest {
         game.move(new Move(7, 7, 5, 7));
         game.move(new Move(0, 7, 2, 7));
 
-        // checking
+        // check
         assertTrue(game.pieceAt(5, 0).type().equals("Rook"));
         assertTrue(game.pieceAt(5, 0).player().equals(Player.WHITE));
         assertTrue(game.pieceAt(2, 0).type().equals("Rook"));
@@ -167,7 +167,7 @@ public class ChessTest {
         game.move(new Move(5, 7, 5, 4));
         game.move(new Move(2, 7, 2, 4));
 
-        // checking
+        // check
         assertTrue(game.pieceAt(5, 3).type().equals("Rook"));
         assertTrue(game.pieceAt(5, 3).player().equals(Player.WHITE));
         assertTrue(game.pieceAt(2, 3).type().equals("Rook"));
@@ -189,18 +189,87 @@ public class ChessTest {
         game.move(new Move(6, 4, 4, 4));
         game.move(new Move(1, 4, 3, 4));
 
-        // move
+        // move white bishop
+        game.move(new Move(7, 2, 4, 5));
+
+        // move black bishop
+        game.move(new Move(0, 5, 3, 2));
+
+        // check
+        assertTrue(game.pieceAt(4, 5).type().equals("Bishop"));
+        assertTrue(game.pieceAt(4, 5).player().equals(Player.WHITE));
+
+        assertTrue(game.pieceAt(3, 2).type().equals("Bishop"));
+        assertTrue(game.pieceAt(3, 2).player().equals(Player.BLACK));
 
     }
 
     @Test
     public void moveQueens(){
+        ChessModel game = new ChessModel();
 
+        // move pawns out of the way
+        game.move(new Move(6, 4, 5, 4));
+        game.move(new Move(1, 2, 2, 2));
+
+        // move white queen diagonally
+        game.move(new Move(7, 3, 4, 6));
+
+        // move black queen diagonally
+        game.move(new Move(0, 3, 3, 3));
+
+        // check
+        assertTrue(game.pieceAt(4, 6).type().equals("Queen"));
+        assertTrue(game.pieceAt(4, 6).player().equals(Player.WHITE));
+
+        assertTrue(game.pieceAt(3, 3).type().equals("Queen"));
+        assertTrue(game.pieceAt(3, 3).player().equals(Player.BLACK));
+
+        // move white queen horizontally
+        game.move(new Move(4, 6, 4, 2));
+
+        // move black queen horizontally
+        game.move(new Move(3, 3, 3, 7));
+
+        // check
+        assertTrue(game.pieceAt(4, 2).type().equals("Queen"));
+        assertTrue(game.pieceAt(4, 2).player().equals(Player.WHITE));
+
+        assertTrue(game.pieceAt(3, 7).type().equals("Queen"));
+        assertTrue(game.pieceAt(3, 7).player().equals(Player.BLACK));
     }
 
     @Test
     public void moveKings(){
+        ChessModel game = new ChessModel();
 
+        // move pawns out of the way
+        game.move(new Move(6, 4, 4, 4));
+        game.move(new Move(1, 4, 3, 4));
+
+        // moving kings vertically
+        game.move(new Move(7, 4, 6, 4));
+        game.move(new Move(0, 4, 1, 4));
+        game.move(new Move(6, 4, 5, 4));
+        game.move(new Move(1, 4, 2, 4));
+
+        // check
+        assertTrue(game.pieceAt(5, 4).type().equals("King"));
+        assertTrue(game.pieceAt(5, 4).player().equals(Player.WHITE));
+
+        assertTrue(game.pieceAt(2, 4).type().equals("King"));
+        assertTrue(game.pieceAt(2, 4).player().equals(Player.BLACK));
+
+        // moving kings horizontally
+        game.move(new Move(5, 4, 5, 3));
+        game.move(new Move(2, 4, 2, 5));
+
+        // check
+        assertTrue(game.pieceAt(5, 3).type().equals("King"));
+        assertTrue(game.pieceAt(5, 3).player().equals(Player.WHITE));
+
+        assertTrue(game.pieceAt(2, 5).type().equals("King"));
+        assertTrue(game.pieceAt(2, 5).player().equals(Player.BLACK));
     }
 
     @Test
@@ -315,6 +384,21 @@ public class ChessTest {
     @Test
     public void whiteInCheck(){
 
+        ChessModel game = new ChessModel();
+
+        // moving pawns
+        game.move(new Move(6, 3, 4, 3));
+        game.move(new Move(1, 3, 3, 3));
+        game.move(new Move(6, 4, 4, 4));
+        game.move(new Move(1, 4, 3, 4));
+
+        // move white bishop
+        game.move(new Move(7, 2, 4, 5));
+
+        // move black bishop
+        game.move(new Move(0, 5, 4, 1));
+
+        assertTrue(game.inCheck(game.currentPlayer()));
     }
 
     @Test
@@ -327,8 +411,6 @@ public class ChessTest {
         game.move(new Move(7, 3, 3, 7));
 
         assertTrue(game.inCheck(game.currentPlayer().next()));
-
-        // FIXME
     }
 
     @Test
@@ -347,36 +429,62 @@ public class ChessTest {
     public void blackCheckmate(){
         ChessModel game = new ChessModel();
 
+        game.move(new Move(6, 4, 4, 4));
+        game.move(new Move(0, 1, 2, 0));
+        game.move(new Move(7, 5, 4, 2));
+        game.move(new Move(2, 0, 0, 1));
+        game.move(new Move(7, 3, 3, 7));
+        game.move(new Move(0, 1, 2, 0));
+        game.move(new Move(3, 7, 1, 5));
 
+        game.setNextPlayer();
+        assertTrue(game.isComplete());
     }
 
-    // Example tests to reference for syntax FIXME delete these later
+    @Test
+    public void startNewGame(){
+        ChessModel game = new ChessModel();
 
-	/*@Test
-	public void testIsLeapYearAA() {
-		SimpleDate d = new SimpleDate("3/1/2013");
-		assertFalse(d.isLeapYear());
-		d = new SimpleDate("3/1/2000");
-		assertTrue(d.isLeapYear());
-	}
-	@Test(expected = IllegalArgumentException.class)
-	public void testIncorrectYearAA() {
-		SimpleDate d1 = new SimpleDate("3/1/1752");
-	}
-	@Test(expected = IllegalArgumentException.class)
-	public void testIncorrectDayAA() {
-		SimpleDate d1 = new SimpleDate("3/-1/1800");
-	}
-	@Test(expected = IllegalArgumentException.class)
-	public void testIncorrectMonthAA() {
-		SimpleDate d1 = new SimpleDate("-3/1/1800");
-	}
-	@Test(expected = IllegalArgumentException.class)
-	public void testEqualsWithNull2AA() {
-		SimpleDate d1 = new SimpleDate("005/15/2015");
-		SimpleDate d2 = null;
-		SimpleDate.equals(d1, d2);
-	}*/
+        // move pieces
+        game.move(new Move(6, 3, 4, 3));
+        game.move(new Move(1, 3, 3, 3));
 
+        // start a new game
+        game.newGame();
 
+        // check positions
+        assertTrue(game.pieceAt(6, 3).type().equals("Pawn"));
+        assertTrue(game.pieceAt(6, 3).player().equals(Player.WHITE));
+
+        assertTrue(game.pieceAt(1, 3).type().equals("Pawn"));
+        assertTrue(game.pieceAt(1, 3).player().equals(Player.BLACK));
+    }
+
+    @Test
+    public void testIsOccupied() {
+        ChessModel game = new ChessModel();
+        assertTrue(game.isOccupied(0,0));
+    }
+
+    @Test
+    public void promotePawn(){
+        ChessModel game = new ChessModel();
+
+        game.move(new Move(6, 2, 4, 2));
+        game.move(new Move(1, 2, 3, 2));
+        game.move(new Move(6, 1, 4, 1));
+        game.move(new Move(3, 2, 4, 1));
+        game.move(new Move(4, 2, 3, 2));
+        game.move(new Move(4, 1, 5, 1));
+        game.move(new Move(7, 1, 5, 2));
+        game.move(new Move(5, 1, 6, 1));
+        game.move(new Move(3, 2, 2, 2));
+        game.move(new Move(6, 1, 7, 1));
+        game.setNextPlayer();
+
+        assertTrue(game.ifPromote());
+        game.toPromote(7, 1);
+        assertEquals(game.pieceAt(7, 1).player(), Player.BLACK);
+        assertTrue(!game.pieceAt(7,1).type().equals("Pawn"));
+    }
 }

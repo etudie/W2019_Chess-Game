@@ -260,6 +260,8 @@ public class ChessPanel extends JPanel {
             JOptionPane.showMessageDialog(null, "White King in Check");
         if (model.inCheck(Player.BLACK))
             JOptionPane.showMessageDialog(null, "Black King in Check");
+        if (model.movingIntoCheck())
+            JOptionPane.showMessageDialog(null, "Cannot move into check");
         if (model.isComplete())
             JOptionPane.showMessageDialog(null, "Checkmate");
     }
@@ -292,6 +294,10 @@ public class ChessPanel extends JPanel {
                     displayBoard();
                     model.setNextPlayer();
                     currentTurn.setText("Turn : " + model.currentPlayer());
+                    if (model.currentPlayer().equals(Player.BLACK))
+                        AI.setEnabled(true);
+                    else
+                        AI.setEnabled(false);
                 }
             }
 
@@ -301,6 +307,10 @@ public class ChessPanel extends JPanel {
                     displayBoard();
                     model.setNextPlayer();
                     currentTurn.setText("Turn : " + model.currentPlayer());
+                    if (model.currentPlayer().equals(Player.BLACK))
+                        AI.setEnabled(true);
+                    else
+                        AI.setEnabled(false);
                 }
             }
 
